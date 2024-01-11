@@ -8,24 +8,41 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class BattagliaNavale extends Game {
 
 
+	MenuScreen menuScreen;
+	GameScreen gameScreen;
 	SpriteBatch batch;
 	BitmapFont font12;
+	BitmapFont font18;
+
+	Skin defaultSkin;
 
 	GameLogic theGame;
 
 	@Override
 	public void create() {
 		theGame = new GameLogic(this);
+		initFont();
+		defaultSkin = new Skin();
+		defaultSkin.add("myfont", font18, BitmapFont.class);
+		defaultSkin.addRegions(new TextureAtlas("skins/Particle Park UI Skin/Particle Park UI.atlas"));
+		defaultSkin.load(Gdx.files.internal("skins/Particle Park UI Skin/Particle Park UI.json"));
+
 
 		batch = new SpriteBatch();
-		initFont();
-		this.setScreen(new MenuScreen(this));
+
+		menuScreen = new MenuScreen(this);
+		gameScreen = new GameScreen(this);
+
+		this.setScreen(menuScreen);
 
 	}
 
@@ -33,6 +50,7 @@ public class BattagliaNavale extends Game {
 	@Override
 	public void dispose(){
 		super.dispose();
+
 	}
 
 	public void render(){
@@ -40,12 +58,18 @@ public class BattagliaNavale extends Game {
 
 	}
 
+
+
 	private void initFont(){
 		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Comforta.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator.FreeTypeFontParameter biggerParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		parameter.size = 12;
 		parameter.color = Color.BLACK;
+		biggerParameter.size = 18;
+		biggerParameter.color = Color.BLACK;
 		font12 = gen.generateFont(parameter);
+		font18 = gen.generateFont(biggerParameter);
 
 	}
 
