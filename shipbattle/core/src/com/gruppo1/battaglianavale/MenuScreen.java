@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.gruppo1.battaglianavale.Custom.DigitFilter;
 
 public class MenuScreen extends ScreenAdapter {
 
@@ -31,8 +32,11 @@ public class MenuScreen extends ScreenAdapter {
     private Label.LabelStyle lblStyle;
 
     private Label.LabelStyle lblStyle18;
+
+    private Label.LabelStyle lblStyleTitle;
     private Label fpsCounter;
     private Label ipAddr;
+    private Label title;
 
     private TextField ipField;
 
@@ -53,7 +57,11 @@ public class MenuScreen extends ScreenAdapter {
 
         //DA FINIRE, ora è inutile lol
         ipField = new TextField("", game.defaultSkin);
-        ipField.setColor(Color.WHITE);
+        ipField.setSize(310, 40);
+        ipField.setAlignment(1);
+        ipField.setMaxLength(16);
+        ipField.setMessageText("Indirizzo IP");
+        ipField.setTextFieldFilter(new DigitFilter());
 
 
         lblStyle = new Label.LabelStyle();
@@ -62,8 +70,12 @@ public class MenuScreen extends ScreenAdapter {
         lblStyle18 = new Label.LabelStyle();
         lblStyle18.font = game.font18;
 
+        lblStyleTitle = new Label.LabelStyle();
+        lblStyleTitle.font = game.fontTitle;
         fpsCounter = new Label("Fps: ", lblStyle);
         ipAddr = new Label("IP: "+game.theGame.getLocalAddress(), lblStyle18);
+
+        title = new Label("Battaglia Navale", lblStyleTitle);
 
         this.InitListeners();
     }
@@ -77,6 +89,7 @@ public class MenuScreen extends ScreenAdapter {
         mainMenu.addActor(ipAddr);
         mainMenu.addActor(ipField);
         mainMenu.addActor(btnStartNewGame);
+        mainMenu.addActor(title);
 
         //Posizioni degli attori (oggetti) su schermo
         fpsCounter.setPosition(mainMenu.getWidth()- 50, mainMenu.getHeight() - 15);
@@ -87,6 +100,7 @@ public class MenuScreen extends ScreenAdapter {
 
         btnStartNewGame.setPosition(mainMenu.getWidth()/2-btnStartNewGame.getWidth()*btnStartNewGame.getScaleX()/2, mainMenu.getHeight()-300);
 
+        title.setPosition(mainMenu.getWidth()/2-title.getWidth()/2, mainMenu.getHeight()-50);
     }
 
 
@@ -97,7 +111,6 @@ public class MenuScreen extends ScreenAdapter {
         fpsCounter.setText("Fps: "+ Gdx.graphics.getFramesPerSecond());
 
         game.batch.begin();
-
         game.batch.end();
 
 

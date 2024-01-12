@@ -22,6 +22,8 @@ public class BattagliaNavale extends Game {
 	SpriteBatch batch;
 	BitmapFont font12;
 	BitmapFont font18;
+	BitmapFont fontTxtField;
+	BitmapFont fontTitle;
 
 	Skin defaultSkin;
 
@@ -32,7 +34,7 @@ public class BattagliaNavale extends Game {
 		theGame = new GameLogic(this);
 		initFont();
 		defaultSkin = new Skin();
-		defaultSkin.add("myfont", font18, BitmapFont.class);
+		defaultSkin.add("myfont", fontTxtField, BitmapFont.class);
 		defaultSkin.addRegions(new TextureAtlas("skins/Particle Park UI Skin/Particle Park UI.atlas"));
 		defaultSkin.load(Gdx.files.internal("skins/Particle Park UI Skin/Particle Park UI.json"));
 
@@ -68,8 +70,17 @@ public class BattagliaNavale extends Game {
 		parameter.color = Color.BLACK;
 		biggerParameter.size = 18;
 		biggerParameter.color = Color.BLACK;
+		FreeTypeFontGenerator.FreeTypeFontParameter paramField = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		paramField.size = 18;
+		paramField.color = Color.WHITE;
+
+		FreeTypeFontGenerator.FreeTypeFontParameter paramTitle = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		paramTitle.size = 32;
+		paramTitle.color = Color.BLACK;
 		font12 = gen.generateFont(parameter);
 		font18 = gen.generateFont(biggerParameter);
+		fontTxtField = gen.generateFont(paramField);
+		fontTitle = gen.generateFont(paramTitle);
 
 	}
 
