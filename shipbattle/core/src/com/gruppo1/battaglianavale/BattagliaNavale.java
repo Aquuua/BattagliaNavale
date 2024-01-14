@@ -25,6 +25,7 @@ public class BattagliaNavale extends Game {
 	BitmapFont fontTxtField;
 	BitmapFont fontTitle;
 
+
 	Skin defaultSkin;
 
 	GameLogic theGame;
@@ -32,6 +33,7 @@ public class BattagliaNavale extends Game {
 	@Override
 	public void create() {
 		theGame = new GameLogic(this);
+
 		initFont();
 		defaultSkin = new Skin();
 		defaultSkin.add("myfont", fontTxtField, BitmapFont.class);
