@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gruppo1.battaglianavale.Custom.MapTile;
+import com.gruppo1.battaglianavale.Custom.ShipTile;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class GameScreen extends ScreenAdapter {
     protected int multiplier;
 
     float mapStartingX, mapStartingY;
-    Image[][] shipSelectors;
+    ShipTile[][] shipSelectors;
     MapTile[][] mapIcons;
     private Stage gameStage;
     private Label.LabelStyle lblStyle;
@@ -45,11 +46,11 @@ public class GameScreen extends ScreenAdapter {
         this.game = game;
         this.gameLogic = game.theGame;
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
-        this.multiplier = mapTexture.getWidth()/10;
-        this.viewport = new FitViewport(1600,900);
+        this.multiplier = mapTexture.getWidth() / 10;
+        this.viewport = new FitViewport(1600, 900);
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, this.viewport.getWorldWidth() , this.viewport.getWorldHeight());
+        camera.setToOrtho(false, this.viewport.getWorldWidth(), this.viewport.getWorldHeight());
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 
         this.initComponents();
@@ -60,7 +61,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        this.gameStage.getViewport().update(width,height);
+        this.gameStage.getViewport().update(width, height);
     }
 
 
@@ -68,12 +69,12 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         super.render(delta);
         ScreenUtils.clear(Color.WHITE); //Sfondo bianco, will probably change
-        fpsCounter.setText("Fps: "+ Gdx.graphics.getFramesPerSecond());
+        fpsCounter.setText("Fps: " + Gdx.graphics.getFramesPerSecond());
         game.batch.begin();
         game.batch.end();
         //
         gameStage.act();
-        
+
         gameStage.draw();
     }
 
@@ -91,31 +92,31 @@ public class GameScreen extends ScreenAdapter {
         //Aggiunge la mappa allo stage (rende possibile il render)
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                if(i == 0 && j == 0){
-                    mapStartingX = 400+(i+1)*multiplier;
-                    mapStartingY = (j+1)*multiplier;
+                if (i == 0 && j == 0) {
+                    mapStartingX = 400 + (i + 1) * multiplier;
+                    mapStartingY = (j + 1) * multiplier;
                 }
-                mapIcons[j][i].setPosition(400+(i+1)*multiplier, (j+1)*multiplier);
+                mapIcons[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
                 gameStage.addActor(mapIcons[i][j]);
             }
         }
 
         //Posiziona le navi da pigliare e posizionare
-        for(int i = 0; i<5; i++){
-            for(int j = 0; j<2; j++){
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 2; j++) {
 
-                float x = shipSelectors[j][i].getWidth()*shipSelectors[j][i].getScaleX();
-                float y = shipSelectors[j][i].getHeight()*shipSelectors[j][i].getScaleY();
-                shipSelectors[j][i].setPosition(x/2+(x*j), gameStage.getHeight()/1.5f+y-(y*i)); //?????? Non funzionava per 3000 anni ma mettere calcoli matematici totalmente casuali ha funzionato
+                float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
+                float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
+                shipSelectors[j][i].setPosition(x / 2 + (x * j), gameStage.getHeight() / 1.5f + y - (y * i)); //?????? Non funzionava per 3000 anni ma mettere calcoli matematici totalmente casuali ha funzionato
                 gameStage.addActor(shipSelectors[j][i]);
             }
         }
         gameStage.addActor(fpsCounter);
-        fpsCounter.setPosition(gameStage.getWidth()- 50, gameStage.getHeight() - 15);
+        fpsCounter.setPosition(gameStage.getWidth() - 50, gameStage.getHeight() - 15);
 
     }
 
-    private void initComponents(){
+    private void initComponents() {
         this.initGameMap();
         lblStyle = new Label.LabelStyle();
         lblStyle.font = game.font12;
@@ -123,11 +124,11 @@ public class GameScreen extends ScreenAdapter {
         held = false;
     }
 
-    private void initGameMap(){
-        shipSelectors = new Image[2][5];
-        for(int i = 0; i<5; i++){
-            for(int j = 0; j<2; j++){
-                shipSelectors[j][i] = (new Image(new Texture(Gdx.files.internal("textures/2.png"))));
+    private void initGameMap() {
+        shipSelectors = new ShipTile[2][5];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 2; j++) {
+                shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/2.png")), 2));
 
             }
         }
@@ -135,14 +136,15 @@ public class GameScreen extends ScreenAdapter {
         mapIcons = new MapTile[10][10];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                mapIcons[i][j] = new MapTile(mapTexture, j*multiplier,(9-i)*multiplier, multiplier, multiplier);
+                mapIcons[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
             }
         }
     }
 
-    private void initListeners(){
-        for(int i = 0; i<5; i++){
-            for(int j = 0; j<2; j++){
+    private void initListeners() {
+        //Inits ship selectors' listeners
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 2; j++) {
                 int finalJ = j;
                 int finalI = i;
                 shipSelectors[j][i].addListener(new InputListener() {
@@ -152,16 +154,18 @@ public class GameScreen extends ScreenAdapter {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
 
                     }
+
                     //Quando il mouse non è più sopra al "pulsante"
                     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                     }
                 });
                 shipSelectors[j][i].addListener(new InputListener() {
-                    Image img = shipSelectors[finalJ][finalI];
+                    ShipTile img = shipSelectors[finalJ][finalI];
+
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
+                        held = true;
                         System.out.println("Mouse down on the image!");
                         return true;
                     }
@@ -170,46 +174,100 @@ public class GameScreen extends ScreenAdapter {
                     public void touchDragged(InputEvent event, float x, float y, int pointer) {
                         float changeX = 0, changeY = 0;
 
-                        if(Gdx.input.isKeyJustPressed(Input.Keys.R)){
+                        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                             System.out.println(img.getRotation());
-                            if((int)img.getRotation() == 0)
+                            if ((int) img.getRotation() == 0)
                                 img.setRotation(90);
-                            else if((int)img.getRotation() == 90)
+                            else if ((int) img.getRotation() == 90)
                                 img.setRotation(0);
                         }
-                        switch ((int)img.getRotation()){
+                        switch ((int) img.getRotation()) {
                             case 0:
-                                changeX = ((img.getImageWidth()*img.getScaleX())/-2);
-                                changeY = ((img.getImageHeight()*img.getScaleY())/-2)*-1;
-                            break;
+                                changeX = ((img.getImageWidth() * img.getScaleX()) / -2);
+                                changeY = ((img.getImageHeight() * img.getScaleY()) / -2) * -1;
+                                break;
                             case 90:
                                 changeX = ((img.getImageWidth()));
-                                changeY = img.getImageHeight()/4;
+                                changeY = img.getImageHeight() / 4;
                                 break;
                         }
-                        img.setPosition(Gdx.input.getX()+ changeX, gameStage.getHeight()- Gdx.input.getY()-changeY);
-
+                        img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
                     }
 
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        System.out.println("Mouse up on the image!");
-                        System.out.println(img.getRotation());
-                        if(inMap(img)){
+                        held = false;
+                        System.out.println(img.getWidth());
+                        System.out.println(img.getHeight());
+                        if (inMap(img)) {
                             img.removeListener(this);
                         }
                     }
                 });
             }
         }
+
+
     }
 
-    private boolean inMap(Image img){
-        if(img.getX() > mapStartingX && img.getX() < mapStartingX+700 && img.getY() > mapStartingY && img.getY() < mapStartingY+700){
-            return true;
+    private boolean inMap(ShipTile img) {
+        if (img.getRotation() == 90) {
+            
+        } else {
+
         }
-        else return false;
+        if (img.getX() > mapStartingX
+                && img.getX() < mapStartingX + 700
+                && img.getY() > mapStartingY
+                && img.getY() < mapStartingY + 700
+                && img.getX() + img.getWidth() > mapStartingX
+                && img.getX() + img.getWidth() < mapStartingX + 700
+                && img.getY() + img.getHeight() > mapStartingY
+                && img.getY() + img.getHeight() < mapStartingY + 700) {
+            int x1, x2, y1, y2;
+
+
+            switch (img.getSize()) {
+                case 1:
+
+
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                default:
+                    break;
+
+            }
+
+            return true;
+        } else return false;
     }
+
+    private boolean posizionaNave(int x1, int y1, int x2, int y2) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int xMap1 = ((int) mapIcons[i][j].getX());
+                int xMap2 = ((int) mapIcons[i][j].getX() + (int) mapIcons[i][j].getImageWidth());
+                int yMap1 = ((int) mapIcons[i][j].getY());
+                int yMap2 = ((int) mapIcons[i][j].getY() + (int) mapIcons[i][j].getImageHeight());
+
+                int distance = (int) Math.hypot(xMap1 - x1, yMap1 - y1);
+                int distance2 = (int) Math.hypot(xMap2 - x2, yMap2 - y2);
+                if (distance > distance2) {
+                    System.out.println("Posizionata in " + i + ", " + j);
+                    return true;
+                }
+
+
+            }
+        }
+        return false;
+    }
+
 }
 
 
