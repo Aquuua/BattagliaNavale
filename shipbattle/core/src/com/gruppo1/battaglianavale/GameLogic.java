@@ -7,6 +7,7 @@ import java.util.List;
 
 public class GameLogic {
 
+    //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
     public GameLogic(BattagliaNavale game){
 
@@ -20,6 +21,10 @@ public class GameLogic {
             throw new RuntimeException(e);
         }
         return addr;
+    }
+
+    public void posizionaNave(int i, int j){
+        //TODO
     }
 
 }

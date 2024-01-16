@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -33,6 +34,7 @@ public class GameScreen extends ScreenAdapter {
     private FitViewport viewport;
     private OrthographicCamera camera;
     private boolean held;
+    private ShipTile temp;
     protected int multiplier;
 
     float mapStartingX, mapStartingY;
@@ -55,8 +57,6 @@ public class GameScreen extends ScreenAdapter {
 
         this.initComponents();
         this.initListeners();
-
-
     }
 
     @Override
@@ -89,6 +89,7 @@ public class GameScreen extends ScreenAdapter {
 
         gameStage.setDebugAll(true);
 
+
         //Aggiunge la mappa allo stage (rende possibile il render)
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -97,6 +98,7 @@ public class GameScreen extends ScreenAdapter {
                     mapStartingY = (j + 1) * multiplier;
                 }
                 mapIcons[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
+                System.out.println("Coordinate: "+ i + ", " + j + "; " + mapIcons[j][i].getX() + ", " + mapIcons[j][i].getY());
                 gameStage.addActor(mapIcons[i][j]);
             }
         }
@@ -136,6 +138,7 @@ public class GameScreen extends ScreenAdapter {
         mapIcons = new MapTile[10][10];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
+
                 mapIcons[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
             }
         }
@@ -173,6 +176,7 @@ public class GameScreen extends ScreenAdapter {
                     @Override
                     public void touchDragged(InputEvent event, float x, float y, int pointer) {
                         float changeX = 0, changeY = 0;
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
 
                         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                             System.out.println(img.getRotation());
@@ -192,81 +196,50 @@ public class GameScreen extends ScreenAdapter {
                                 break;
                         }
                         img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
+                        //if(inMap(img)){
+                            int col = (int) ((img.getX()-mapStartingX)/70);
+                            int row = (int) ((img.getY()-mapStartingY)/70);
+                            float xTemp = mapStartingX + col *70;
+                            float yTemp = mapStartingY + row*70;
+                            img.setPosition(xTemp, yTemp);
+                       // }
+                        if(inMap(img)){
+                            img.removeListener(this);
+                        }
                     }
 
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         held = false;
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                         System.out.println(img.getWidth());
                         System.out.println(img.getHeight());
-                        if (inMap(img)) {
-                            img.removeListener(this);
-                        }
+                        System.out.println(img.getX() + " " +  img.getY());
+                        temp = img;
+
+
                     }
                 });
             }
         }
 
-
     }
 
     private boolean inMap(ShipTile img) {
-        if (img.getRotation() == 90) {
-            
-        } else {
-
-        }
-        if (img.getX() > mapStartingX
-                && img.getX() < mapStartingX + 700
-                && img.getY() > mapStartingY
-                && img.getY() < mapStartingY + 700
+        if (img.getX() >= mapStartingX
+                && img.getX() <= mapStartingX + 700
+                && img.getY() >= mapStartingY
+                && img.getY() <= mapStartingY + 700
                 && img.getX() + img.getWidth() > mapStartingX
                 && img.getX() + img.getWidth() < mapStartingX + 700
                 && img.getY() + img.getHeight() > mapStartingY
                 && img.getY() + img.getHeight() < mapStartingY + 700) {
-            int x1, x2, y1, y2;
-
-
-            switch (img.getSize()) {
-                case 1:
-
-
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                default:
-                    break;
-
-            }
 
             return true;
         } else return false;
     }
 
-    private boolean posizionaNave(int x1, int y1, int x2, int y2) {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                int xMap1 = ((int) mapIcons[i][j].getX());
-                int xMap2 = ((int) mapIcons[i][j].getX() + (int) mapIcons[i][j].getImageWidth());
-                int yMap1 = ((int) mapIcons[i][j].getY());
-                int yMap2 = ((int) mapIcons[i][j].getY() + (int) mapIcons[i][j].getImageHeight());
 
-                int distance = (int) Math.hypot(xMap1 - x1, yMap1 - y1);
-                int distance2 = (int) Math.hypot(xMap2 - x2, yMap2 - y2);
-                if (distance > distance2) {
-                    System.out.println("Posizionata in " + i + ", " + j);
-                    return true;
-                }
-
-
-            }
-        }
-        return false;
-    }
 
 }
 
