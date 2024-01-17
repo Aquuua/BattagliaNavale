@@ -7,9 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class MapTile extends Image {
 
+    private boolean isOccupied;
 
     public MapTile(Texture texture, int x, int y, int width, int height) {
         super(new TextureRegion(texture, x, y, width, height));
+        isOccupied = false;
+    }
 
+    public boolean getOccupation(){
+        return isOccupied;
+    }
+    public void setOccupation(boolean sas){
+        this.isOccupied = sas;
     }
 }

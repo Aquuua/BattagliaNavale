@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gruppo1.battaglianavale.Custom.MapTile;
 import com.gruppo1.battaglianavale.Custom.ShipTile;
+import sun.security.util.ArrayUtil;
 
 import java.util.ArrayList;
 
@@ -112,7 +113,10 @@ public class GameScreen extends ScreenAdapter {
 
                 float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
                 float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
+
                 shipSelectors[j][i].setPosition(x / 2 + (x * j), gameStage.getHeight() / 1.5f + y - (y * i)); //?????? Non funzionava per 3000 anni ma mettere calcoli matematici totalmente casuali ha funzionato
+                shipSelectors[j][i].setInitialX(shipSelectors[j][i].getX());
+                shipSelectors[j][i].setInitialY(shipSelectors[j][i].getY());
                 gameStage.addActor(shipSelectors[j][i]);
             }
         }
@@ -133,7 +137,8 @@ public class GameScreen extends ScreenAdapter {
         shipSelectors = new ShipTile[2][5];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 2; j++) {
-                shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/2.png")), 2));
+                shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/3.png")), 3));
+
 
             }
         }
@@ -200,7 +205,6 @@ public class GameScreen extends ScreenAdapter {
                         }
                         img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
                         if(inMap(img)){
-
                             int col = (int) ((img.getX()-mapStartingX)/70);
                             int row = (int) ((img.getY()-mapStartingY)/70);
                             float xTemp = mapStartingX + col *70;
@@ -219,7 +223,19 @@ public class GameScreen extends ScreenAdapter {
                         System.out.println(img.getX() + " " +  img.getY());
 
                         if(inMap(img)){
-                            img.removeListener(this);
+                            ArrayList<MapTile> navi;
+                            navi = posizioneNave(img);
+                            if(navi != null){
+                                for (int k = 0; k < navi.size(); k++) {
+                                    navi.get(k).setOccupation(true);
+                                }
+                                img.removeListener(this);
+                            }else {
+                                System.out.println("POSIZIONE INVALIDAaAAAAAAAS");
+                                img.setPosition(img.getInitialX(), img.getInitialY());
+                                img.setRotation(0);
+                            }
+
                         }
                         temp = img;
 
@@ -228,6 +244,69 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+    }
+    private ArrayList<MapTile> posizioneNave(ShipTile img){
+        ArrayList<MapTile> tempMappe;
+        if(img.getRotation() == 0){
+            int yIniziale = (int)img.getY();
+            tempMappe = new ArrayList<>();
+
+
+                for(int j = 0; j<10; j++){
+                    for(int k = 0; k<10; k++){
+                        int mapY = (int)mapIcons[j][k].getY();
+                        if(mapY==yIniziale && (img.getX() == mapIcons[j][k].getX())){
+                            if(!mapIcons[j][k].getOccupation()){
+                                for(int i = 0; i<img.getSize(); i++) {
+                                    if(!mapIcons[j+i][k].getOccupation()){
+                                        tempMappe.add(mapIcons[j+i][k]);
+
+                                        int sum = j+i;
+                                        System.out.println(sum + " ," + k);
+                                    }else return null;
+
+                                }
+                            }
+                            else
+                            {
+
+                                return null;
+                            }
+
+                        }
+                    }
+                }
+            return tempMappe;
+        }else if(img.getRotation() == 90)
+        {
+            int xIniziale = (int)img.getX()-(int)img.getHeight();
+            tempMappe = new ArrayList<>();
+
+            for(int j = 0; j<10; j++){
+                for(int k = 0; k<10; k++){
+                    int mapX = (int)mapIcons[j][k].getX();
+                    if(mapX==xIniziale && (img.getY() == mapIcons[j][k].getY())){
+                        if(!mapIcons[j][k].getOccupation()){
+                            for(int i = 0; i<img.getSize(); i++) {
+                                if(!mapIcons[j][k+i].getOccupation()){
+                                    tempMappe.add(mapIcons[j][k+i]);
+                                    int sum = k+i;
+                                    System.out.println(j + " ," + sum);
+                                }else return null;
+
+                            }
+                        }else{
+
+                            return null;
+                        }
+                    }
+                }
+            }
+            return tempMappe;
+        }
+        else
+
+        return null;
     }
 
     private boolean inMap(ShipTile img) {
@@ -239,21 +318,23 @@ public class GameScreen extends ScreenAdapter {
                     && (img.getX() + img.getWidth()) >= mapStartingX
                     && (img.getX() + img.getWidth()) <= (mapStartingX + MAX_MAP_SIZE+70)
                     && (img.getY() + img.getHeight()) >=mapStartingY
-                    && (img.getY() + img.getHeight()) <= (mapStartingY + MAX_MAP_SIZE+70)) {
+                    && (img.getY() + img.getHeight()) <= (mapStartingY + MAX_MAP_SIZE+70))
+            {
 
 
                 return true;
             } else return false;
         }else
-        {//da implementare in ShipTIle forse se ho tempo
+        {
             if (img.getX()  >= mapStartingX
                     && img.getX()  <= (mapStartingX + MAX_MAP_SIZE+70)
-                    && img.getY()  > mapStartingY
+                    && img.getY()  >= mapStartingY
                     && img.getY() < (mapStartingY + MAX_MAP_SIZE)
                     && (img.getX() - img.getHeight()) >= mapStartingX
                     && (img.getX() - img.getHeight()) <= (mapStartingX + MAX_MAP_SIZE+70)
-                    && (img.getY() + img.getWidth()) >mapStartingY
-                    && (img.getY() - img.getWidth()) < (mapStartingY + MAX_MAP_SIZE)) {
+                    && (img.getY() + img.getWidth()) >=mapStartingY
+                    && (img.getY() - img.getWidth()) < (mapStartingY + MAX_MAP_SIZE))
+            {
 
 
                 return true;
