@@ -16,6 +16,7 @@ public class TabellaGioco {
         inizializzaTabella();
     }
 
+    //Metodo che inizializza la tabella per ogni giocatore
     private void inizializzaTabella() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -24,6 +25,7 @@ public class TabellaGioco {
         }
     }
 
+    //Metodo che stampa la tabella
     public void visualizzaTabella() {
         System.out.println("  1 2 3 4 5 6 7 8 9 10");
         for (int i = 0; i < 10; i++) {
@@ -36,6 +38,7 @@ public class TabellaGioco {
         System.out.println();
     }
 
+    //Metodo che contiene i controlli del posizionamento delle navi
     public boolean posizionaNave(int x, int y, char direzione, int lunghezza, char simboloNave) {
         if (x < 0 || x >= 10 || y < 0 || y >= 10) {
             System.out.println("Errore: Coordinate non valide. Riprova.");
@@ -81,6 +84,7 @@ public class TabellaGioco {
         return true;
     }
 
+    //Metodo che controlla se l'attacco ha colpito oppure no
     public boolean attacca(int x, int y) {
         if (x < 0 || x >= 10 || y < 0 || y >= 10) {
             System.out.println("Errore: Attacco non valido. Riprova.");
@@ -98,6 +102,7 @@ public class TabellaGioco {
         return true;
     }
 
+    //Metodo che controlla se tutte le navi sono state affondate
     public boolean tutteNaviAffondate() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
