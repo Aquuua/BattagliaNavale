@@ -32,6 +32,11 @@ public class GameScreen extends ScreenAdapter {
     private final BattagliaNavale game;
     private final GameLogic gameLogic;
     private final int MAX_MAP_SIZE;
+
+    //probabilmente verrà spostato nella classe GameLogic
+    private int ship1, ship2, ship3, ship4, ship5;
+
+
     private final Texture mapTexture; //700x700
     private FitViewport viewport;
     private OrthographicCamera camera;
@@ -53,6 +58,12 @@ public class GameScreen extends ScreenAdapter {
         this.multiplier = mapTexture.getWidth() / 10;
         this.viewport = new FitViewport(1600, 900);
 
+        ship1 = 1;
+        ship2 = 1;
+        ship3 = 2;
+        ship4 = 1;
+        ship5 = 1;
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, this.viewport.getWorldWidth(), this.viewport.getWorldHeight());
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
@@ -64,6 +75,44 @@ public class GameScreen extends ScreenAdapter {
         System.out.println(viewport.getScaling());
     }
 
+    private void initGameMap() {
+        shipSelectors = new ShipTile[2][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                if(ship1!=0){
+                    shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/1.png")), 1));
+                    ship1--;
+                }
+                else if(ship2!=0){
+                    shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/2.png")), 2));
+                    ship2--;
+                }
+                else if(ship3!=0){
+                    shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/3.png")), 3));
+                    ship3--;
+                }
+                else if(ship4!=0){
+                    shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/4.png")), 4));
+                    ship4--;
+                }
+                else if(ship5!=0){
+                    shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/5.png")), 5));
+                    ship5--;
+                }
+
+
+
+            }
+        }
+
+        mapIcons = new MapTile[10][10];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+
+                mapIcons[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
+            }
+        }
+    }
     @Override
     public void resize(int width, int height) {
         this.gameStage.getViewport().update(width, height);
@@ -108,9 +157,9 @@ public class GameScreen extends ScreenAdapter {
         }
 
         //Posiziona le navi da pigliare e posizionare
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
-
+//TODO fix ship selectors location, it sucks
                 float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
                 float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
 
@@ -133,28 +182,11 @@ public class GameScreen extends ScreenAdapter {
         held = false;
     }
 
-    private void initGameMap() {
-        shipSelectors = new ShipTile[2][5];
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 2; j++) {
-                shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/3.png")), 3));
 
-
-            }
-        }
-
-        mapIcons = new MapTile[10][10];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-
-                mapIcons[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
-            }
-        }
-    }
 
     private void initListeners() {
         //Inits ship selectors' listeners
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
                 int finalJ = j;
                 int finalI = i;
