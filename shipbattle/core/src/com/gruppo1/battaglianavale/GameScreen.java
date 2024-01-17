@@ -30,6 +30,7 @@ import java.util.ArrayList;
 public class GameScreen extends ScreenAdapter {
     private final BattagliaNavale game;
     private final GameLogic gameLogic;
+    private final int MAX_MAP_SIZE;
     private final Texture mapTexture; //700x700
     private FitViewport viewport;
     private OrthographicCamera camera;
@@ -57,6 +58,9 @@ public class GameScreen extends ScreenAdapter {
 
         this.initComponents();
         this.initListeners();
+        MAX_MAP_SIZE = (int)mapIcons[0][0].getWidth()*10;
+        System.out.println(MAX_MAP_SIZE);
+        System.out.println(viewport.getScaling());
     }
 
     @Override
@@ -98,7 +102,6 @@ public class GameScreen extends ScreenAdapter {
                     mapStartingY = (j + 1) * multiplier;
                 }
                 mapIcons[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
-                System.out.println("Coordinate: "+ i + ", " + j + "; " + mapIcons[j][i].getX() + ", " + mapIcons[j][i].getY());
                 gameStage.addActor(mapIcons[i][j]);
             }
         }
@@ -196,13 +199,13 @@ public class GameScreen extends ScreenAdapter {
                                 break;
                         }
                         img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
-                        //if(inMap(img)){
+                        if(inMap(img)){
                             int col = (int) ((img.getX()-mapStartingX)/70);
                             int row = (int) ((img.getY()-mapStartingY)/70);
                             float xTemp = mapStartingX + col *70;
                             float yTemp = mapStartingY + row*70;
                             img.setPosition(xTemp, yTemp);
-                       // }
+                        }
                         if(inMap(img)){
                             img.removeListener(this);
                         }
@@ -227,13 +230,14 @@ public class GameScreen extends ScreenAdapter {
 
     private boolean inMap(ShipTile img) {
         if (img.getX() >= mapStartingX
-                && img.getX() <= mapStartingX + 700
-                && img.getY() >= mapStartingY
-                && img.getY() <= mapStartingY + 700
-                && img.getX() + img.getWidth() > mapStartingX
-                && img.getX() + img.getWidth() < mapStartingX + 700
-                && img.getY() + img.getHeight() > mapStartingY
-                && img.getY() + img.getHeight() < mapStartingY + 700) {
+                && img.getX() < (mapStartingX + MAX_MAP_SIZE)
+                && img.getY() > mapStartingY
+                && img.getY() < (mapStartingY + MAX_MAP_SIZE)
+                && (img.getX() + img.getWidth()) > mapStartingX
+                && (img.getX() + img.getWidth()) < (mapStartingX + MAX_MAP_SIZE)
+                && (img.getY() + img.getHeight()) > mapStartingY
+                && (img.getY() + img.getHeight()) < (mapStartingY + MAX_MAP_SIZE)) {
+
 
             return true;
         } else return false;
