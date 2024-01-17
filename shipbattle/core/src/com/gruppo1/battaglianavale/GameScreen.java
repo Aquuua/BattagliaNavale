@@ -200,15 +200,14 @@ public class GameScreen extends ScreenAdapter {
                         }
                         img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
                         if(inMap(img)){
+
                             int col = (int) ((img.getX()-mapStartingX)/70);
                             int row = (int) ((img.getY()-mapStartingY)/70);
                             float xTemp = mapStartingX + col *70;
                             float yTemp = mapStartingY + row*70;
                             img.setPosition(xTemp, yTemp);
                         }
-                        if(inMap(img)){
-                            img.removeListener(this);
-                        }
+
                     }
 
                     @Override
@@ -218,8 +217,11 @@ public class GameScreen extends ScreenAdapter {
                         System.out.println(img.getWidth());
                         System.out.println(img.getHeight());
                         System.out.println(img.getX() + " " +  img.getY());
-                        temp = img;
 
+                        if(inMap(img)){
+                            img.removeListener(this);
+                        }
+                        temp = img;
 
                     }
                 });
@@ -229,18 +231,35 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private boolean inMap(ShipTile img) {
-        if (img.getX() >= mapStartingX
-                && img.getX() < (mapStartingX + MAX_MAP_SIZE)
-                && img.getY() > mapStartingY
-                && img.getY() < (mapStartingY + MAX_MAP_SIZE)
-                && (img.getX() + img.getWidth()) > mapStartingX
-                && (img.getX() + img.getWidth()) < (mapStartingX + MAX_MAP_SIZE)
-                && (img.getY() + img.getHeight()) > mapStartingY
-                && (img.getY() + img.getHeight()) < (mapStartingY + MAX_MAP_SIZE)) {
+        if(img.getRotation() == 0){
+            if (img.getX() >= mapStartingX
+                    && img.getX() <= (mapStartingX + MAX_MAP_SIZE+70)
+                    && img.getY() >= mapStartingY
+                    && img.getY() <= (mapStartingY + MAX_MAP_SIZE+70)
+                    && (img.getX() + img.getWidth()) >= mapStartingX
+                    && (img.getX() + img.getWidth()) <= (mapStartingX + MAX_MAP_SIZE+70)
+                    && (img.getY() + img.getHeight()) >=mapStartingY
+                    && (img.getY() + img.getHeight()) <= (mapStartingY + MAX_MAP_SIZE+70)) {
 
 
-            return true;
-        } else return false;
+                return true;
+            } else return false;
+        }else
+        {//da implementare in ShipTIle forse se ho tempo
+            if (img.getX()  >= mapStartingX
+                    && img.getX()  <= (mapStartingX + MAX_MAP_SIZE+70)
+                    && img.getY()  > mapStartingY
+                    && img.getY() < (mapStartingY + MAX_MAP_SIZE)
+                    && (img.getX() - img.getHeight()) >= mapStartingX
+                    && (img.getX() - img.getHeight()) <= (mapStartingX + MAX_MAP_SIZE+70)
+                    && (img.getY() + img.getWidth()) >mapStartingY
+                    && (img.getY() - img.getWidth()) < (mapStartingY + MAX_MAP_SIZE)) {
+
+
+                return true;
+            } else return false;
+        }
+
     }
 
 
