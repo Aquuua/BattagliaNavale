@@ -174,7 +174,7 @@ public class GameScreen extends ScreenAdapter {
             //info.setText("Aspettando che siate entrambi pronti...");
 
         } else {
-
+            info.setText("Aspettando un player...");
         }
         Gdx.input.setInputProcessor(gameStage);
         //gameStage.setDebugAll(true);
@@ -349,7 +349,7 @@ public class GameScreen extends ScreenAdapter {
                 shipSelectors[j][i].addListener(new InputListener() {
                     //Quando ci passi sopra con il mouse mette la manina
                     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                        if (!gameLogic.hasGameStarted)
+                        if (!gameLogic.hasGameStarted) //se non si è unito l'altro player non ti fa fare niente
                             Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
 
                     }
@@ -436,6 +436,9 @@ public class GameScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (areAllShipsPositioned()) {
+                    //Ready solo se hai posizionato tutte le mappe
+                    //Disattiva il timer dei 2 minuti e si rende invisibile
+                    //TODO mandare al server il ready o metterlo in lettura automatica rendendo GameLogic un thread e cambiando le variabili (forse meglio entrambi?)
                     time.clear();
                     tempo.remove();
                     btnReady.removeListener(this);
@@ -534,6 +537,7 @@ public class GameScreen extends ScreenAdapter {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO mandare al server le coordinate salvate in precedenza.
                 gameLogic.attaccoEseguito = false;
                 confermaAttacco.setVisible(false);
 
@@ -627,7 +631,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void colpitoFuoco(int x, int y) {
-        //TODO creare una immagine di fuoco
+        //TODO creare una immagine di fuoco sulle coordinate, ovvero dove sono stato colpito
     }
 
 }

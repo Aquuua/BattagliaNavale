@@ -7,20 +7,24 @@ import java.net.*;
 public class GameLogic //extends Thread
 {
 
+    //TODO implementazione Client in GameLogic
     //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
 
     boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
+    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
-    boolean isGameReady; //TRUE se sono entrati entrambi i player
+    boolean isGameReady; //TRUE se sono entrati entrambi i player,
+    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
+
 
     boolean attaccoEseguito;
 
     public GameLogic(BattagliaNavale game) {
         hasGameStarted = false;
-        isGameReady = true; //true TEMPORANEI sto aspettando il client e server
+        isGameReady = true; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
         isPlayerReady = false;
 
     }
@@ -36,12 +40,12 @@ public class GameLogic //extends Thread
     }
 
     public void posizionaNave(int i, int j) {
-        //TODO
+        //TODO dal visuale al server attraverso il client
     }
 //    public void run(){
 //        while true
 //    }
-    //Checks for valid IP Address
+    //Controlla se una stringa è un vero indirizzo IP
     private boolean checkDots(String ip) {
 
         try {

@@ -148,6 +148,7 @@ public class MenuScreen extends ScreenAdapter {
         btnStartNewGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO far startare il Server sulla macchina e il client con Localhost. BISOGNA FARE TANTE COSE
                 game.setScreen(game.gameScreen);
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 mainMenu.dispose();
@@ -170,6 +171,7 @@ public class MenuScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 if(game.theGame.entraNellaPartita(ipField.getText())){
                     System.out.println("SAS");
+                    //TODO far entrare il client del GameLogic che è anche quello un TODO in un server attraverso l'ip.
 
                 }
 //                game.setScreen(game.gameScreen);
