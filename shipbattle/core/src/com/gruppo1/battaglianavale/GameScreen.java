@@ -62,6 +62,7 @@ public class GameScreen extends ScreenAdapter {
 
     private Label.LabelStyle lblStyle18;
     private Image bordiMappa;
+    private Image bordiMappaAttacco;
     private Label tip;
     private Label fpsCounter;
     private Timer time;
@@ -77,6 +78,7 @@ public class GameScreen extends ScreenAdapter {
         this.gameLogic = game.theGame;
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
         this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
+
 
         this.multiplier = mapTexture.getWidth() / 10;
         this.viewport = new FitViewport(1600, 900);
@@ -186,7 +188,9 @@ public class GameScreen extends ScreenAdapter {
                     mapStartingX = 400 + (i + 1) * multiplier;
                     mapStartingY = (j + 1) * multiplier;
                     gameStage.addActor(bordiMappa);
+                    gameStage.addActor(bordiMappaAttacco);
                     bordiMappa.setPosition(mapStartingX - multiplier, mapStartingY);
+                    bordiMappaAttacco.setPosition(mapStartingX-multiplier, mapStartingY);
                 }
                 mapIcons[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
                 mapIconsAttack[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
@@ -233,6 +237,8 @@ public class GameScreen extends ScreenAdapter {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     mapIconsAttack[j][i].setVisible(true);
+                    bordiMappaAttacco.setVisible(true);
+                    bordiMappa.setVisible(false);
                     mapIcons[j][i].setVisible(false);
 
                 }
@@ -254,6 +260,8 @@ public class GameScreen extends ScreenAdapter {
 
 
                     mapIconsAttack[j][i].setVisible(false);
+                    bordiMappaAttacco.setVisible(false);
+                    bordiMappa.setVisible(true);
                     mapIcons[j][i].setVisible(true);
 
                 }
@@ -290,6 +298,8 @@ public class GameScreen extends ScreenAdapter {
         btnCambiaMappa.setScale(0.5f);
         btnCambiaMappa.setVisible(false);
         this.bordiMappa = new Image(new Texture(Gdx.files.internal("textures/bordi.png")));
+        this.bordiMappaAttacco = new Image(new Texture(Gdx.files.internal("textures/bordiAttacco.png")));
+        this.bordiMappaAttacco.setVisible(false);
         this.confermaAttacco = new Image(new Texture(Gdx.files.internal("textures/pulsanteAttacco.png")));
         confermaAttacco.setVisible(false);
         confermaAttacco.setScale(0.2f);
