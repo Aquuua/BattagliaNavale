@@ -37,7 +37,7 @@ public class Client extends Thread {
             // output.println(dati_da_inviare);
 
             // Chiudi la connessione
-            socket.close();
+            //socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

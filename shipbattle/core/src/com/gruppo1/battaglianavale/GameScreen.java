@@ -141,7 +141,7 @@ public class GameScreen extends ScreenAdapter {
 
         Gdx.input.setInputProcessor(gameStage);
 
-        gameStage.setDebugAll(true);
+        //gameStage.setDebugAll(true);
 
 
         //Aggiunge la mappa allo stage (rende possibile il render)

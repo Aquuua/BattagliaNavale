@@ -4,8 +4,8 @@ public class AvvioGioco {
         Client client1 = new Client("Giocatore 1");
         Client client2 = new Client("Giocatore 2");
 
-        server.run();
-        client1.run();
-        client2.run();
+        server.start();
+        client1.start();
+        client2.start();
     }
 }
