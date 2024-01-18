@@ -20,6 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -41,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
 
 
     private final Texture mapTexture; //700x700
+    private final Texture attackMapTexture;
     private FitViewport viewport;
     private OrthographicCamera camera;
 
@@ -51,22 +55,29 @@ public class GameScreen extends ScreenAdapter {
     float mapStartingX, mapStartingY;
     ShipTile[][] shipSelectors;
     MapTile[][] mapIcons;
+    MapTile[][] mapIconsAttack;
     private Stage gameStage;
     private Image btnReady;
     private Label.LabelStyle lblStyle;
 
     private Label.LabelStyle lblStyle18;
+    private Image bordiMappa;
     private Label tip;
     private Label fpsCounter;
     private Timer time;
     private Label ipAddr;
     private Label tempo;
     private Label info;
+    private Image confermaAttacco;
+    private Image btnCambiaMappa;
+    private ArrayList<Image> zoneColpite;
 
     public GameScreen(BattagliaNavale game) {
         this.game = game;
         this.gameLogic = game.theGame;
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
+        this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
+
         this.multiplier = mapTexture.getWidth() / 10;
         this.viewport = new FitViewport(1600, 900);
 
@@ -107,15 +118,20 @@ public class GameScreen extends ScreenAdapter {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/5.png")), 5));
                     ship5--;
                 }
-
             }
         }
 
         mapIcons = new MapTile[10][10];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-
                 mapIcons[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
+            }
+        }
+
+        mapIconsAttack = new MapTile[10][10];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                mapIconsAttack[i][j] = new MapTile(mapTexture, j * multiplier, (9 - i) * multiplier, multiplier, multiplier);
             }
         }
     }
@@ -134,7 +150,10 @@ public class GameScreen extends ScreenAdapter {
         game.batch.begin();
         game.batch.end();
         if (gameLogic.isGameReady) {
-            this.initListeners();
+            //this.initListeners();
+            //verrà invocato
+
+            info.setPosition(btnReady.getX() - info.getWidth() / 2, gameStage.getHeight() - 150);
         }
 
         //
@@ -149,11 +168,16 @@ public class GameScreen extends ScreenAdapter {
         this.gameStage = new Stage();
         this.gameStage.setViewport(viewport);
         this.gameStage.getViewport().setCamera(camera);
-        this.initTimer();
+        if (gameLogic.isGameReady) {
+            this.initTimer();
+            initListeners();
+            //info.setText("Aspettando che siate entrambi pronti...");
+
+        } else {
+
+        }
         Gdx.input.setInputProcessor(gameStage);
-
         //gameStage.setDebugAll(true);
-
 
         //Aggiunge la mappa allo stage (rende possibile il render)
         for (int i = 0; i < 10; i++) {
@@ -161,9 +185,14 @@ public class GameScreen extends ScreenAdapter {
                 if (i == 0 && j == 0) {
                     mapStartingX = 400 + (i + 1) * multiplier;
                     mapStartingY = (j + 1) * multiplier;
+                    gameStage.addActor(bordiMappa);
+                    bordiMappa.setPosition(mapStartingX - multiplier, mapStartingY);
                 }
                 mapIcons[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
+                mapIconsAttack[j][i].setPosition(400 + (i + 1) * multiplier, (j + 1) * multiplier);
+                mapIconsAttack[j][i].setVisible(false);
                 gameStage.addActor(mapIcons[i][j]);
+                gameStage.addActor(mapIconsAttack[i][j]);
             }
         }
 
@@ -186,13 +215,61 @@ public class GameScreen extends ScreenAdapter {
         gameStage.addActor(tempo);
         gameStage.addActor(info);
         gameStage.addActor(ipAddr);
+        gameStage.addActor(confermaAttacco);
+        gameStage.addActor(btnCambiaMappa);
         tip.setPosition(gameStage.getWidth() / 2 - tip.getWidth() / 2, gameStage.getHeight() - 30);
-        ipAddr.setPosition(gameStage.getWidth()/2 - ipAddr.getWidth()/2, 20);
+        ipAddr.setPosition(gameStage.getWidth() / 2 - ipAddr.getWidth() / 2, 20);
         fpsCounter.setPosition(gameStage.getWidth() - 50, gameStage.getHeight() - 15);
-        btnReady.setPosition(gameStage.getWidth()-btnReady.getWidth()* btnReady.getScaleX()-tempo.getWidth()/5, gameStage.getHeight()-250);
-        info.setPosition(btnReady.getX()-5, gameStage.getHeight()-150);
-        tempo.setPosition(gameStage.getWidth() - tempo.getWidth() , gameStage.getHeight()-100);
+        btnReady.setPosition(gameStage.getWidth() - btnReady.getWidth() * btnReady.getScaleX() - tempo.getWidth() / 5, gameStage.getHeight() - 250);
+        info.setPosition(btnReady.getX() - 5, gameStage.getHeight() - 150);
+        tempo.setPosition(gameStage.getWidth() - tempo.getWidth(), gameStage.getHeight() - 100);
+        confermaAttacco.setPosition(gameStage.getWidth() - 200, gameStage.getHeight() - 300);
+        btnCambiaMappa.setPosition(gameStage.getWidth() - 100, gameStage.getHeight() - 300);
 
+    }
+
+    private void toggleMap() {
+        if (!mapIconsAttack[0][0].isVisible()) {
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    mapIconsAttack[j][i].setVisible(true);
+                    mapIcons[j][i].setVisible(false);
+
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 2; j++) {
+                    //TODO fix ship selectors location, it sucks
+                    float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
+                    float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
+
+                    shipSelectors[j][i].setVisible(false);
+
+                }
+            }
+        } else {
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+
+
+                    mapIconsAttack[j][i].setVisible(false);
+                    mapIcons[j][i].setVisible(true);
+
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 2; j++) {
+                    //TODO fix ship selectors location, it sucks
+                    float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
+                    float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
+
+                    shipSelectors[j][i].setVisible(true);
+
+                }
+            }
+        }
     }
 
     private void initComponents() {
@@ -201,38 +278,43 @@ public class GameScreen extends ScreenAdapter {
         lblStyle.font = game.font12;
         lblStyle18 = new Label.LabelStyle();
         lblStyle18.font = game.font18;
-        ipAddr = new Label("IPV4: "+gameLogic.getLocalAddress(), lblStyle18);
+        ipAddr = new Label("IPV4: " + gameLogic.getLocalAddress(), lblStyle18);
         tip = new Label("Premi il tasto R per ruotare la nave mentre la trasporti sulla mappa!", lblStyle18);
         fpsCounter = new Label("Fps: ", lblStyle);
         held = false;
         tempo = new Label("Non pronto! Tempo rimanente: ", lblStyle18);
         btnReady = new Image(new Texture(Gdx.files.internal("textures/pulsantePronto.png")));
         btnReady.setScale(0.3f);
-        info = new Label("Informazioni avversario", lblStyle18);
-
-
+        info = new Label("In attesa del player...", lblStyle);
+        btnCambiaMappa = new Image(new Texture(Gdx.files.internal("textures/pulsanteCambia.png")));
+        btnCambiaMappa.setScale(0.5f);
+        btnCambiaMappa.setVisible(false);
+        this.bordiMappa = new Image(new Texture(Gdx.files.internal("textures/bordi.png")));
+        this.confermaAttacco = new Image(new Texture(Gdx.files.internal("textures/pulsanteAttacco.png")));
+        confermaAttacco.setVisible(false);
+        confermaAttacco.setScale(0.2f);
         time = new Timer();
 
     }
-    private void initTimer(){
+
+    private void initTimer() {
         time.schedule(new Timer.Task() {
             private float countdownTime = 120;
 
             @Override
             public void run() {
-
                 if (!gameLogic.isPlayerReady) {
-
                     countdownTime -= 1;
                     tempo.setText(String.format("Tempo rimanente: %.0f seconds", countdownTime));
-
                     if (countdownTime <= 0) {
+                        //TODO eventuale metodo che chiuderà il collegamento client-server e tutto il resto
                         showDialog("Non hai messo pronto in tempo.");
                     }
                 }
             }
         }, 0, 1);
     }
+
     private void showDialog(String message) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -267,8 +349,8 @@ public class GameScreen extends ScreenAdapter {
                 shipSelectors[j][i].addListener(new InputListener() {
                     //Quando ci passi sopra con il mouse mette la manina
                     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-
-                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+                        if (!gameLogic.hasGameStarted)
+                            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
 
                     }
 
@@ -338,8 +420,8 @@ public class GameScreen extends ScreenAdapter {
                                 }
                                 img.removeListener(this);
                             } else {
-                                //TODO Mostrare label con messaggio di errore pls
-                                System.out.println("POSIZIONE INVALIDAaAAAAAAAS");
+                                info.setText("LAST: Posizione non valida.");
+
                                 img.setPosition(img.getInitialX(), img.getInitialY());
                                 img.setRotation(0);
                             }
@@ -353,11 +435,16 @@ public class GameScreen extends ScreenAdapter {
         btnReady.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(areAllShipsPositioned()){
+                if (areAllShipsPositioned()) {
                     time.clear();
                     tempo.remove();
                     btnReady.removeListener(this);
+                    btnReady.setVisible(false);
+                    btnCambiaMappa.setVisible(true);
+
                     gameLogic.isPlayerReady = true;
+                    //SOLO PER DEBUGGING!!!!!!!
+                    gameLogic.hasGameStarted = true;
                 }
 
             }
@@ -368,15 +455,92 @@ public class GameScreen extends ScreenAdapter {
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
             }
+
             //Quando il mouse non è più sopra al "pulsante"
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
 
+        btnCambiaMappa.addListener(new InputListener() {
+            //Quando ci passi sopra con il mouse mette la manina
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            //Quando il mouse non è più sopra al "pulsante"
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+
+        btnCambiaMappa.addListener((new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                toggleMap();
+
+            }
+        }));
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                mapIconsAttack[j][i].addListener(new InputListener() {
+                    //Quando ci passi sopra con il mouse mette la manina
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+                    }
+
+                    //Quando il mouse non è più sopra al "pulsante"
+                    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                    }
+                });
+                int finalJ = j;
+                int finalI = i;
+                mapIconsAttack[j][i].addListener((new ClickListener() {
+
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        //TODO controllo con gameLogic e gioco di BAI-COCKY
+                        if (!gameLogic.attaccoEseguito) {
+                            info.setText("attacco in " + finalJ + " " + finalI); //TODO will change, to get adapted Adopted fuck you kid, you are adopted
+                            gameLogic.attaccoEseguito = true;
+                            mapIconsAttack[finalJ][finalI].removeListener(this);
+                            mapIconsAttack[finalJ][finalI].setDrawable(new TextureRegionDrawable(new TextureRegion(attackMapTexture, finalI * multiplier, (9 - finalJ) * multiplier, multiplier, multiplier)));
+                            confermaAttacco.setVisible(true);
+                        }
+
+                    }
+                }));
+            }
+        }
+
+        confermaAttacco.addListener(new InputListener() {
+            //Quando ci passi sopra con il mouse mette la manina
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            //Quando il mouse non è più sopra al "pulsante"
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+
+        confermaAttacco.addListener((new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameLogic.attaccoEseguito = false;
+                confermaAttacco.setVisible(false);
+
+            }
+        }));
+
     }
-
-
 
     private ArrayList<MapTile> posizioneNave(ShipTile img) {
         ArrayList<MapTile> tempMappe;
@@ -393,13 +557,13 @@ public class GameScreen extends ScreenAdapter {
                                     tempMappe.add(mapIcons[j + i][k]);
 
                                     int sum = j + i;
+                                    //TODO salvare da qualche parte per poi passare al server le coordinate.
                                     System.out.println(sum + " ," + k);
                                 } else return null;
                             }
                         } else {
                             return null;
                         }
-
                     }
                 }
             }
@@ -462,6 +626,9 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
+    public void colpitoFuoco(int x, int y) {
+        //TODO creare una immagine di fuoco
+    }
 
 }
 

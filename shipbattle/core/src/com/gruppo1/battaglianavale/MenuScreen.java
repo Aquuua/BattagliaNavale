@@ -178,6 +178,18 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
 
+        ipField.addListener(new InputListener() {
+            //Quando ci passi sopra con il mouse mette la manina
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Ibeam);
+
+            }
+            //Quando il mouse non è più sopra al "pulsante"
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+
 
     }
 
