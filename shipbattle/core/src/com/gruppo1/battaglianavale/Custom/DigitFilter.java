@@ -16,33 +16,6 @@ public class DigitFilter implements TextField.TextFieldFilter {
             if (a == c) return true;
         return false;
     }
-    //Checks for valid IP Address
-    private boolean checkDots(TextField textField){
-        String ip = textField.getText();
-        try {
-            if ( ip == null || ip.isEmpty() ) {
-                return false;
-            }
 
-            String[] parts = ip.split( "\\." );
-            if ( parts.length != 4 ) {
-                return false;
-            }
-
-            for ( String s : parts ) {
-                int i = Integer.parseInt( s );
-                if ( (i < 0) || (i > 255) ) {
-                    return false;
-                }
-            }
-            if ( ip.endsWith(".") ) {
-                return false;
-            }
-
-            return true;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-    }
 }
 

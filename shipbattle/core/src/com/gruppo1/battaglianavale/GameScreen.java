@@ -16,16 +16,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gruppo1.battaglianavale.Custom.MapTile;
 import com.gruppo1.battaglianavale.Custom.ShipTile;
 import sun.security.util.ArrayUtil;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class GameScreen extends ScreenAdapter {
@@ -40,6 +43,7 @@ public class GameScreen extends ScreenAdapter {
     private final Texture mapTexture; //700x700
     private FitViewport viewport;
     private OrthographicCamera camera;
+
     private boolean held;
     private ShipTile temp;
     protected int multiplier;
@@ -48,8 +52,16 @@ public class GameScreen extends ScreenAdapter {
     ShipTile[][] shipSelectors;
     MapTile[][] mapIcons;
     private Stage gameStage;
+    private Image btnReady;
     private Label.LabelStyle lblStyle;
+
+    private Label.LabelStyle lblStyle18;
+    private Label tip;
     private Label fpsCounter;
+    private Timer time;
+    private Label ipAddr;
+    private Label tempo;
+    private Label info;
 
     public GameScreen(BattagliaNavale game) {
         this.game = game;
@@ -70,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
 
         this.initComponents();
         this.initListeners();
-        MAX_MAP_SIZE = (int)mapIcons[0][0].getWidth()*10;
+        MAX_MAP_SIZE = (int) mapIcons[0][0].getWidth() * 10;
         System.out.println(MAX_MAP_SIZE);
         System.out.println(viewport.getScaling());
     }
@@ -79,28 +91,22 @@ public class GameScreen extends ScreenAdapter {
         shipSelectors = new ShipTile[2][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
-                if(ship1!=0){
+                if (ship1 != 0) {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/1.png")), 1));
                     ship1--;
-                }
-                else if(ship2!=0){
+                } else if (ship2 != 0) {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/2.png")), 2));
                     ship2--;
-                }
-                else if(ship3!=0){
+                } else if (ship3 != 0) {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/3.png")), 3));
                     ship3--;
-                }
-                else if(ship4!=0){
+                } else if (ship4 != 0) {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/4.png")), 4));
                     ship4--;
-                }
-                else if(ship5!=0){
+                } else if (ship5 != 0) {
                     shipSelectors[j][i] = (new ShipTile(new Texture(Gdx.files.internal("textures/5.png")), 5));
                     ship5--;
                 }
-
-
 
             }
         }
@@ -113,6 +119,7 @@ public class GameScreen extends ScreenAdapter {
             }
         }
     }
+
     @Override
     public void resize(int width, int height) {
         this.gameStage.getViewport().update(width, height);
@@ -126,6 +133,12 @@ public class GameScreen extends ScreenAdapter {
         fpsCounter.setText("Fps: " + Gdx.graphics.getFramesPerSecond());
         game.batch.begin();
         game.batch.end();
+        if (gameLogic.isGameReady) {
+            this.initListeners();
+        }
+        if (!gameLogic.hasGameStarted) {
+            gameLogic.hasGameStarted = areAllShipsPositioned();
+        }
         //
         gameStage.act();
 
@@ -138,7 +151,7 @@ public class GameScreen extends ScreenAdapter {
         this.gameStage = new Stage();
         this.gameStage.setViewport(viewport);
         this.gameStage.getViewport().setCamera(camera);
-
+        this.initTimer();
         Gdx.input.setInputProcessor(gameStage);
 
         //gameStage.setDebugAll(true);
@@ -159,7 +172,7 @@ public class GameScreen extends ScreenAdapter {
         //Posiziona le navi da pigliare e posizionare
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
-//TODO fix ship selectors location, it sucks
+                //TODO fix ship selectors location, it sucks
                 float x = shipSelectors[j][i].getWidth() * shipSelectors[j][i].getScaleX();
                 float y = shipSelectors[j][i].getHeight() * shipSelectors[j][i].getScaleY();
 
@@ -170,7 +183,17 @@ public class GameScreen extends ScreenAdapter {
             }
         }
         gameStage.addActor(fpsCounter);
+        gameStage.addActor(tip);
+        gameStage.addActor(btnReady);
+        gameStage.addActor(tempo);
+        gameStage.addActor(info);
+        gameStage.addActor(ipAddr);
+        tip.setPosition(gameStage.getWidth() / 2 - tip.getWidth() / 2, gameStage.getHeight() - 30);
+        ipAddr.setPosition(gameStage.getWidth()/2 - ipAddr.getWidth()/2, 20);
         fpsCounter.setPosition(gameStage.getWidth() - 50, gameStage.getHeight() - 15);
+        btnReady.setPosition(gameStage.getWidth()-btnReady.getWidth()* btnReady.getScaleX()-tempo.getWidth()/5, gameStage.getHeight()-250);
+        info.setPosition(btnReady.getX()-5, gameStage.getHeight()-150);
+        tempo.setPosition(gameStage.getWidth() - tempo.getWidth() , gameStage.getHeight()-100);
 
     }
 
@@ -178,12 +201,65 @@ public class GameScreen extends ScreenAdapter {
         this.initGameMap();
         lblStyle = new Label.LabelStyle();
         lblStyle.font = game.font12;
+        lblStyle18 = new Label.LabelStyle();
+        lblStyle18.font = game.font18;
+        ipAddr = new Label("IPV4: "+gameLogic.getLocalAddress(), lblStyle18);
+        tip = new Label("Premi il tasto R per ruotare la nave mentre la trasporti sulla mappa!", lblStyle18);
         fpsCounter = new Label("Fps: ", lblStyle);
         held = false;
+        tempo = new Label("Non pronto! Tempo rimanente: ", lblStyle18);
+        btnReady = new Image(new Texture(Gdx.files.internal("textures/pulsantePronto.png")));
+        btnReady.setScale(0.3f);
+        info = new Label("Informazioni avversario", lblStyle18);
+
+
+        time = new Timer();
+
+    }
+    private void initTimer(){
+        time.schedule(new Timer.Task() {
+            private float countdownTime = 120;
+
+            @Override
+            public void run() {
+
+                if (!gameLogic.isPlayerReady) {
+
+                    countdownTime -= 1;
+                    tempo.setText(String.format("Tempo rimanente: %.0f seconds", countdownTime));
+
+                    if (countdownTime <= 0) {
+                        showDialog("Non hai messo pronto in tempo.");
+                    }
+                }
+            }
+        }, 0, 1);
+    }
+    private void showDialog(String message) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JOptionPane.showMessageDialog(null, message, "Skill issue", JOptionPane.INFORMATION_MESSAGE);
+
+        // Close the game
+        Gdx.app.exit();
     }
 
+    //the name is explicit enough
+    private boolean areAllShipsPositioned() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                if (!inMap(shipSelectors[j][i])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-
+    //read the name and you will understand
     private void initListeners() {
         //Inits ship selectors' listeners
         for (int i = 0; i < 3; i++) {
@@ -236,11 +312,11 @@ public class GameScreen extends ScreenAdapter {
                                 break;
                         }
                         img.setPosition(Gdx.input.getX() + changeX, gameStage.getHeight() - Gdx.input.getY() - changeY);
-                        if(inMap(img)){
-                            int col = (int) ((img.getX()-mapStartingX)/70);
-                            int row = (int) ((img.getY()-mapStartingY)/70);
-                            float xTemp = mapStartingX + col *70;
-                            float yTemp = mapStartingY + row*70;
+                        if (inMap(img)) {
+                            int col = (int) ((img.getX() - mapStartingX) / 70);
+                            int row = (int) ((img.getY() - mapStartingY) / 70);
+                            float xTemp = mapStartingX + col * 70;
+                            float yTemp = mapStartingY + row * 70;
                             img.setPosition(xTemp, yTemp);
                         }
 
@@ -250,19 +326,21 @@ public class GameScreen extends ScreenAdapter {
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         held = false;
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                        System.out.println(img.getWidth());
-                        System.out.println(img.getHeight());
-                        System.out.println(img.getX() + " " +  img.getY());
+//                        System.out.println(img.getWidth());
+//                        System.out.println(img.getHeight());
+//                        System.out.println(img.getX() + " " +  img.getY());
 
-                        if(inMap(img)){
+                        if (inMap(img)) {
                             ArrayList<MapTile> navi;
                             navi = posizioneNave(img);
-                            if(navi != null){
+                            if (navi != null) {
                                 for (int k = 0; k < navi.size(); k++) {
                                     navi.get(k).setOccupation(true);
+                                    navi.get(k).setNave(img);
                                 }
                                 img.removeListener(this);
-                            }else {
+                            } else {
+                                //TODO Mostrare label con messaggio di errore pls
                                 System.out.println("POSIZIONE INVALIDAaAAAAAAAS");
                                 img.setPosition(img.getInitialX(), img.getInitialY());
                                 img.setRotation(0);
@@ -275,59 +353,79 @@ public class GameScreen extends ScreenAdapter {
                 });
             }
         }
+        btnReady.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(areAllShipsPositioned()){
+                    time.clear();
+                    tempo.remove();
+                    btnReady.removeListener(this);
+                }
+
+            }
+        });
+
+        btnReady.addListener(new InputListener() {
+            //Quando ci passi sopra con il mouse mette la manina
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+
+            }
+
+            //Quando il mouse non è più sopra al "pulsante"
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
 
     }
-    private ArrayList<MapTile> posizioneNave(ShipTile img){
+
+
+
+    private ArrayList<MapTile> posizioneNave(ShipTile img) {
         ArrayList<MapTile> tempMappe;
-        if(img.getRotation() == 0){
-            int yIniziale = (int)img.getY();
+        if (img.getRotation() == 0) {
+            int yIniziale = (int) img.getY();
             tempMappe = new ArrayList<>();
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    int mapY = (int) mapIcons[j][k].getY();
+                    if (mapY == yIniziale && (img.getX() == mapIcons[j][k].getX())) {
+                        if (!mapIcons[j][k].getOccupation()) {
+                            for (int i = 0; i < img.getSize(); i++) {
+                                if (!mapIcons[j + i][k].getOccupation()) {
+                                    tempMappe.add(mapIcons[j + i][k]);
 
-
-                for(int j = 0; j<10; j++){
-                    for(int k = 0; k<10; k++){
-                        int mapY = (int)mapIcons[j][k].getY();
-                        if(mapY==yIniziale && (img.getX() == mapIcons[j][k].getX())){
-                            if(!mapIcons[j][k].getOccupation()){
-                                for(int i = 0; i<img.getSize(); i++) {
-                                    if(!mapIcons[j+i][k].getOccupation()){
-                                        tempMappe.add(mapIcons[j+i][k]);
-
-                                        int sum = j+i;
-                                        System.out.println(sum + " ," + k);
-                                    }else return null;
-
-                                }
+                                    int sum = j + i;
+                                    System.out.println(sum + " ," + k);
+                                } else return null;
                             }
-                            else
-                            {
-
-                                return null;
-                            }
-
+                        } else {
+                            return null;
                         }
+
                     }
                 }
+            }
             return tempMappe;
-        }else if(img.getRotation() == 90)
-        {
-            int xIniziale = (int)img.getX()-(int)img.getHeight();
+        } else if (img.getRotation() == 90) {
+            int xIniziale = (int) img.getX() - (int) img.getHeight();
             tempMappe = new ArrayList<>();
-
-            for(int j = 0; j<10; j++){
-                for(int k = 0; k<10; k++){
-                    int mapX = (int)mapIcons[j][k].getX();
-                    if(mapX==xIniziale && (img.getY() == mapIcons[j][k].getY())){
-                        if(!mapIcons[j][k].getOccupation()){
-                            for(int i = 0; i<img.getSize(); i++) {
-                                if(!mapIcons[j][k+i].getOccupation()){
-                                    tempMappe.add(mapIcons[j][k+i]);
-                                    int sum = k+i;
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    int mapX = (int) mapIcons[j][k].getX();
+                    if (mapX == xIniziale && (img.getY() == mapIcons[j][k].getY())) {
+                        if (!mapIcons[j][k].getOccupation()) {
+                            for (int i = 0; i < img.getSize(); i++) {
+                                if (!mapIcons[j][k + i].getOccupation()) {
+                                    tempMappe.add(mapIcons[j][k + i]);
+                                    int sum = k + i;
                                     System.out.println(j + " ," + sum);
-                                }else return null;
+                                } else return null;
 
                             }
-                        }else{
+                        } else {
 
                             return null;
                         }
@@ -335,46 +433,39 @@ public class GameScreen extends ScreenAdapter {
                 }
             }
             return tempMappe;
-        }
-        else
+        } else
 
-        return null;
+            return null;
     }
 
     private boolean inMap(ShipTile img) {
-        if(img.getRotation() == 0){
+        if (img.getRotation() == 0) {
             if (img.getX() >= mapStartingX
-                    && img.getX() <= (mapStartingX + MAX_MAP_SIZE+70)
+                    && img.getX() <= (mapStartingX + MAX_MAP_SIZE + 70)
                     && img.getY() >= mapStartingY
-                    && img.getY() <= (mapStartingY + MAX_MAP_SIZE+70)
+                    && img.getY() <= (mapStartingY + MAX_MAP_SIZE + 70)
                     && (img.getX() + img.getWidth()) >= mapStartingX
-                    && (img.getX() + img.getWidth()) <= (mapStartingX + MAX_MAP_SIZE+70)
-                    && (img.getY() + img.getHeight()) >=mapStartingY
-                    && (img.getY() + img.getHeight()) <= (mapStartingY + MAX_MAP_SIZE+70))
-            {
+                    && (img.getX() + img.getWidth()) <= (mapStartingX + MAX_MAP_SIZE + 70)
+                    && (img.getY() + img.getHeight()) >= mapStartingY
+                    && (img.getY() + img.getHeight()) <= (mapStartingY + MAX_MAP_SIZE + 70)) {
 
 
                 return true;
             } else return false;
-        }else
-        {
-            if (img.getX()  >= mapStartingX
-                    && img.getX()  <= (mapStartingX + MAX_MAP_SIZE+70)
-                    && img.getY()  >= mapStartingY
+        } else {
+            if (img.getX() >= mapStartingX
+                    && img.getX() <= (mapStartingX + MAX_MAP_SIZE + 70)
+                    && img.getY() >= mapStartingY
                     && img.getY() < (mapStartingY + MAX_MAP_SIZE)
                     && (img.getX() - img.getHeight()) >= mapStartingX
-                    && (img.getX() - img.getHeight()) <= (mapStartingX + MAX_MAP_SIZE+70)
-                    && (img.getY() + img.getWidth()) >=mapStartingY
-                    && (img.getY() - img.getWidth()) < (mapStartingY + MAX_MAP_SIZE))
-            {
-
-
+                    && (img.getX() - img.getHeight()) <= (mapStartingX + MAX_MAP_SIZE + 70)
+                    && (img.getY() + img.getWidth()) >= mapStartingY
+                    && (img.getY() - img.getWidth()) < (mapStartingY + MAX_MAP_SIZE)) {
                 return true;
             } else return false;
         }
 
     }
-
 
 
 }

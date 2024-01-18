@@ -37,10 +37,12 @@ public class MenuScreen extends ScreenAdapter {
     private Label fpsCounter;
     private Label ipAddr;
     private Label title;
+    private Label indicazioni;
 
     private TextField ipField;
 
     private Image btnStartNewGame;
+    private Image btnEnterGame;
 
     private Stage mainMenu;
 
@@ -50,6 +52,8 @@ public class MenuScreen extends ScreenAdapter {
         //Crea il pulsante Start
         btnStartNewGame = new Image(new Texture(Gdx.files.internal("textures/pulsanteCrea.png")));
         btnStartNewGame.setScale(0.3f);
+        btnEnterGame = new Image(new Texture(Gdx.files.internal("textures/pulsanteEntra.png")));
+        btnEnterGame.setScale(0.3f);
 
 
 
@@ -76,6 +80,7 @@ public class MenuScreen extends ScreenAdapter {
         ipAddr = new Label("IP: "+game.theGame.getLocalAddress(), lblStyle18);
 
         title = new Label("Battaglia Navale", lblStyleTitle);
+        indicazioni = new Label("Oppure inserisci l'IPV4 dell'host!", lblStyle18);
 
         this.InitListeners();
     }
@@ -90,6 +95,8 @@ public class MenuScreen extends ScreenAdapter {
         mainMenu.addActor(ipField);
         mainMenu.addActor(btnStartNewGame);
         mainMenu.addActor(title);
+        mainMenu.addActor(btnEnterGame);
+        mainMenu.addActor(indicazioni);
 
         //Posizioni degli attori (oggetti) su schermo
         fpsCounter.setPosition(mainMenu.getWidth()- 50, mainMenu.getHeight() - 15);
@@ -99,7 +106,8 @@ public class MenuScreen extends ScreenAdapter {
         ipField.setPosition(mainMenu.getWidth()/2 - ipField.getWidth()/2, mainMenu.getHeight()-400);
 
         btnStartNewGame.setPosition(mainMenu.getWidth()/2-btnStartNewGame.getWidth()*btnStartNewGame.getScaleX()/2, mainMenu.getHeight()-300);
-
+        btnEnterGame.setPosition(mainMenu.getWidth()/2-btnEnterGame.getWidth()*btnEnterGame.getScaleX()/2, mainMenu.getHeight()-500);
+        indicazioni.setPosition(mainMenu.getWidth()/2 - indicazioni.getWidth()/2, mainMenu.getHeight()-350);
         title.setPosition(mainMenu.getWidth()/2-title.getWidth()/2, mainMenu.getHeight()-50);
     }
 
@@ -145,6 +153,32 @@ public class MenuScreen extends ScreenAdapter {
                 mainMenu.dispose();
             }
         });
+
+        btnEnterGame.addListener(new InputListener() {
+            //Quando ci passi sopra con il mouse mette la manina
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+
+            }
+            //Quando il mouse non è più sopra al "pulsante"
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+        btnEnterGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(game.theGame.entraNellaPartita(ipField.getText())){
+                    System.out.println("SAS");
+
+                }
+//                game.setScreen(game.gameScreen);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+//                mainMenu.dispose();
+            }
+        });
+
+
     }
 
 
