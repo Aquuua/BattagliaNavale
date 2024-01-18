@@ -81,7 +81,7 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 
         this.initComponents();
-        this.initListeners();
+        //this.initListeners();
         MAX_MAP_SIZE = (int) mapIcons[0][0].getWidth() * 10;
         System.out.println(MAX_MAP_SIZE);
         System.out.println(viewport.getScaling());
@@ -136,9 +136,7 @@ public class GameScreen extends ScreenAdapter {
         if (gameLogic.isGameReady) {
             this.initListeners();
         }
-        if (!gameLogic.hasGameStarted) {
-            gameLogic.hasGameStarted = areAllShipsPositioned();
-        }
+
         //
         gameStage.act();
 
@@ -345,7 +343,6 @@ public class GameScreen extends ScreenAdapter {
                                 img.setPosition(img.getInitialX(), img.getInitialY());
                                 img.setRotation(0);
                             }
-
                         }
                         temp = img;
 
@@ -360,6 +357,7 @@ public class GameScreen extends ScreenAdapter {
                     time.clear();
                     tempo.remove();
                     btnReady.removeListener(this);
+                    gameLogic.isPlayerReady = true;
                 }
 
             }
@@ -368,11 +366,8 @@ public class GameScreen extends ScreenAdapter {
         btnReady.addListener(new InputListener() {
             //Quando ci passi sopra con il mouse mette la manina
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
-
             }
-
             //Quando il mouse non è più sopra al "pulsante"
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);

@@ -10,11 +10,11 @@ public class GameLogic {
     //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
 
-    boolean hasGameStarted;
+    boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
 
-    boolean isGameReady;
+    boolean isGameReady; //TRUE se sono entrati entrambi i player
 
-    boolean isPlayerReady;
+    boolean isPlayerReady;// TRUE se il client ha messo pronto
     public GameLogic(BattagliaNavale game){
         hasGameStarted = false;
         isGameReady = false;
