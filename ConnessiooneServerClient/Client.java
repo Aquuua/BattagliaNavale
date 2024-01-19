@@ -3,16 +3,16 @@ import java.net.*;
 
 public class Client extends Thread {
 
-    private String serverAddress;
+    private Inet4Address ipAddress;
     private int port;
-    private String nome;
-    private Giocatore giocatore;
-
-    public Client(String n) {
-        serverAddress = "127.0.0.1"; // Indirizzo IP del server
-        port = 5555; // Porta di connessione
-        nome = n;
-        giocatore = new Giocatore(n);
+    private BufferedReader input;
+    private PrintWriter output ;
+   
+    public Client(Inet4Address ipAddress, int port) {
+        this.ipAddress = ipAddress;
+        this.port = port; // Porta di connessione
+       
+        
     }
 
     public void run() {
@@ -25,11 +25,12 @@ public class Client extends Thread {
     public void Connessione() {
         try {
             // Connessione al server
-            Socket socket = new Socket(serverAddress, port);
+            Socket socket = new Socket(ipAddress, port);
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new PrintWriter(socket.getOutputStream(), true);
 
             // Lettura e scrittura dei dati
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+            
 
             // Leggi dati dal server
             String response = input.readLine();

@@ -5,7 +5,10 @@ public class Server extends Thread {
 
     private ServerSocket serverSocket;
     private int port;
-    private Partita partita;
+    private Socket g1, g2;
+    private BufferedReader input1, input2;
+    private PrintWriter output1, output2 ;
+    
 
     public Server() {
         serverSocket = null;
@@ -29,16 +32,12 @@ public class Server extends Thread {
             System.out.println("Server avviato. In attesa di connessioni...");
 
             while (true) {
-                // Accetta connessioni dai client e avvia un thread per gestire la connessione
-                // di ciascun giocatore
-                Socket playerSocket1 = serverSocket.accept();
-                System.out.println("Giocatore 1 connesso.");
-                new Thread(new GestorePlayer(playerSocket1, 1)).start();
+                g1 = serverSocket.accept();
+                input1 = new BufferedReader(new InputStreamReader(g1.getInputStream()));
+                output1 = new PrintWriter(g1.getOutputStream(), true);
 
-                Socket playerSocket2 = serverSocket.accept();
-                System.out.println("Giocatore 2 connesso.");
-                new Thread(new GestorePlayer(playerSocket2, 2)).start();
-
+                
+                
             }
         } catch (IOException e) {
             e.printStackTrace();
