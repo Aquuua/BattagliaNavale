@@ -174,20 +174,19 @@ public class MenuScreen extends ScreenAdapter {
                 if(!ipField.getText().equals("")){
 
                     ip = ipField.getText();
+                    if(game.theGame.entraNellaPartita(ip)){
+                        if(game.theGame.enterGame(ip, GameLogic.getDefaultPort())){
+                            game.setScreen(game.gameScreen);
+                            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                            mainMenu.dispose();
+                        }
+
+
+                    }
                 }
 
 
-                if(game.theGame.entraNellaPartita(ip)){
-                    if(game.theGame.enterGame(ip, GameLogic.getDefaultPort())){
-                        game.setScreen(game.gameScreen);
-                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                        mainMenu.dispose();
-                    }
-                    else{
 
-                    }
-
-                }
 //                game.setScreen(game.gameScreen);
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
 //                mainMenu.dispose();

@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class PlayerHandler implements Runnable {
-
+//Classe che gestisce la comunicazione tra client e server
     private Socket playerSocket;
     private BufferedReader input;
     private PrintWriter output;
@@ -55,6 +55,7 @@ public class PlayerHandler implements Runnable {
         }
     }
 
+    //comunica con un solo client
     public void tellClient(String message){
         output.println(message);
     }

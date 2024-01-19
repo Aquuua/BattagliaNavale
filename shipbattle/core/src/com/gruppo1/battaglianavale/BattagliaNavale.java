@@ -64,6 +64,7 @@ public class BattagliaNavale extends Game {
 	}
 
 
+	// Metodo privato per l'inizializzazione dei font da utilizzare nel gioco.
 
 	private void initFont(){
 		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Comforta.ttf"));

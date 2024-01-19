@@ -102,6 +102,7 @@ public class GameScreen extends ScreenAdapter {
         System.out.println(viewport.getScaling());
     }
 
+    // Questo metodo inizializza la mappa di gioco, posizionando le navi del giocatore e inizializzando le matrici per le icone sulla mappa.
     private void initGameMap() {
         shipSelectors = new ShipTile[2][3];
         for (int i = 0; i < 3; i++) {
@@ -160,13 +161,9 @@ public class GameScreen extends ScreenAdapter {
             gameLogic.isGameReady = false;
 
         }
-
         if(bordiMappaAttacco.isVisible()){
             nascondiFuoco();
         }
-
-
-
         gameStage.act();
 
         gameStage.draw();
@@ -708,10 +705,8 @@ public class GameScreen extends ScreenAdapter {
         }
 
     }
-
+//mette la texture del fuoco nella posizione dove è stata colpita una nave
     public void colpitoFuoco(int x, int y) {
-
-
         Image fire = new Image(textureFuoco);
         zoneColpite.add(fire);
         fire.setPosition(mapIcons[y][x].getX(),mapIcons[y][x].getY());

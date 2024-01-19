@@ -69,7 +69,6 @@ public class GameLogic //extends Thread
 
     public boolean haNavi(){
         for (int i = 0; i<10; i++) {
-
             for (int j = 0; j<10; j++) {
                 if(mappaClient[i][j]){
                     return true;
@@ -181,16 +180,17 @@ public class GameLogic //extends Thread
 
 
     }
-
+    //autoesplicativo
     public void vittoria(){
         game.gameScreen.haiVinto();
     }
-
+    //autoesplicativo
     public void chiusura(){
         client.closeConnection();
 
     }
 
+    //autoesplicativo
     public void pronto(){
         client.ready();
     }
