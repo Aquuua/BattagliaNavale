@@ -35,21 +35,11 @@ public class Client implements Runnable {
     // Metodo per interagire con il server (es. inviare e ricevere messaggi)
     private void interactWithServer() {
         try {
-            // Implementa la logica del giocatore qui
-            // Ad esempio, invia e ricevi messaggi per coordinare le mosse del giocatore
 
             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
             String userInputMessage;
 
             while (true) {
-//                // Leggi l'input del giocatore
-//                System.out.print("Inserisci un messaggio per il server: ");
-//                userInputMessage = userInput.readLine();
-//
-//                // Invia il messaggio al server
-//                output.println(userInputMessage);
-
-                // Ricevi e visualizza la risposta dal server
                 String messageFromServer = input.readLine();
 
                 switch (messageFromServer){
@@ -64,14 +54,11 @@ public class Client implements Runnable {
                         break;
                     default:
                         if(messageFromServer.contains("attacco")){
-                            // Dividere la stringa in base agli spazi
                             String[] parti = messageFromServer.split(" ");
 
-                            // Estrarre i due valori come stringhe
                             String valore1Stringa = parti[1];
                             String valore2Stringa = parti[2];
 
-                            // Convertire le stringhe in interi
                             int x = Integer.parseInt(valore1Stringa);
                             int y = Integer.parseInt(valore2Stringa);
                             System.out.println("Sei stato attaccato.");
@@ -81,11 +68,6 @@ public class Client implements Runnable {
                         break;
                 }
                 System.out.println("Messaggio dal server: " + messageFromServer);
-
-                // Esci dal loop se necessario
-//                if ("exit".equalsIgnoreCase(userInputMessage)) {
-//                    break;
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -10,21 +10,17 @@ import com.gruppo1.battaglianavale.Custom.MapTile;
 import java.net.*;
 
 
-public class GameLogic //extends Thread
+public class GameLogic
 {
     private Server hosting;
     private Client client;
-    //TODO implementazione Client in GameLogic
-    //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
 
     private static final int DEFAULT_PORT = 5959;
 
     boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
-    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
     boolean isGameReady; //TRUE se sono entrati entrambi i player,
-    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
 
@@ -38,7 +34,7 @@ public class GameLogic //extends Thread
 
         this.game = game;
         hasGameStarted = false;
-        isGameReady = false; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
+        isGameReady = false;
         isPlayerReady = false;
 
         mappaClient = new boolean[10][10];
@@ -62,7 +58,7 @@ public class GameLogic //extends Thread
         for (int i = 0; i<10; i++) {
 
             for (int j = 0; j<10; j++) {
-                mappaClient[i][j] = mapTile[9-i][j].getOccupation(); //???????????????????????????????????????????????????????????
+                mappaClient[i][j] = mapTile[9-i][j].getOccupation();
             }
         }
 
@@ -96,7 +92,7 @@ public class GameLogic //extends Thread
         }else return false;
     }
 
-    //Controlla se una stringa è un vero indirizzo IP
+    //Metodo che prende la stringa e vede se è un'indirizzo ip
     private boolean checkDots(String ip) {
 
         try {

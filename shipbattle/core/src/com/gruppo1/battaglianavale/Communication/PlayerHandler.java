@@ -29,7 +29,6 @@ public class PlayerHandler implements Runnable {
         try {
             String message;
             while ((message = input.readLine()) != null) {
-                // Processa il messaggio ricevuto
                 switch (message){
                     case "pronto":
                         giocatorePronto();
@@ -40,9 +39,6 @@ public class PlayerHandler implements Runnable {
 
                 }
                 System.out.println("Messaggio dal giocatore: " + message);
-
-                // Esempio di risposta al giocatore
-
             }
         } catch (IOException e) {
             e.printStackTrace();
