@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.gruppo1.battaglianavale.Custom.Coordinata;
 import com.gruppo1.battaglianavale.Custom.MapTile;
 import com.gruppo1.battaglianavale.Custom.ShipTile;
 import javax.swing.*;
@@ -74,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
         this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
         this.schermataFunny = new Image(new Texture(Gdx.files.internal("textures/haiperso.png")));
-        this.suonoFunny = new Sound
+        this.suonoFunny = Gdx.audio.newSound(Gdx.files.internal("sounds/skillissue.mp3"));
 
 
 
@@ -164,7 +165,7 @@ public class GameScreen extends ScreenAdapter {
             gameLogic.isGameReady = false;
 
         } else {
-            info.setText("Aspettando un player...");
+
         }
         gameStage.act();
 
@@ -232,7 +233,12 @@ public class GameScreen extends ScreenAdapter {
         btnCambiaMappa.setPosition(gameStage.getWidth() - 100, gameStage.getHeight() - 300);
         schermataFunny.setPosition(0,0);
 
-        //schermataFunny.setVisible(false);
+        schermataFunny.setVisible(false);
+
+    }
+    public void haiPerso(){
+        schermataFunny.setVisible(true);
+        suonoFunny.play();
 
     }
 
@@ -428,6 +434,7 @@ public class GameScreen extends ScreenAdapter {
                             ArrayList<MapTile> navi;
                             navi = posizioneNave(img);
                             if (navi != null) {
+
                                 for (int k = 0; k < navi.size(); k++) {
                                     navi.get(k).setOccupation(true);
                                     navi.get(k).setNave(img);
@@ -520,10 +527,11 @@ public class GameScreen extends ScreenAdapter {
 
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //TODO controllo con gameLogic e gioco di BAI-COCKY
-                        if (!gameLogic.attaccoEseguito) {
-                            info.setText("attacco in " + finalJ + " " + finalI); //TODO will change, to get adapted Adopted fuck you kid, you are adopted
-                            gameLogic.attaccoEseguito = true;
+
+                        if (!gameLogic.attaccoEseguito && !gameLogic.attaccoPianificato) {
+                            info.setText("attacco in " + (finalJ+1) + " " + (finalI+1)); //TODO will change, to get adapted Adopted fuck you kid, you are adopted
+                            gameLogic.attaccoPianificato = true;
+                            gameLogic.coordinataAttacco = new Coordinata(finalI+1, finalJ+1);
                             mapIconsAttack[finalJ][finalI].removeListener(this);
                             mapIconsAttack[finalJ][finalI].setDrawable(new TextureRegionDrawable(new TextureRegion(attackMapTexture, finalI * multiplier, (9 - finalJ) * multiplier, multiplier, multiplier)));
                             confermaAttacco.setVisible(true);
@@ -552,7 +560,9 @@ public class GameScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO mandare al server le coordinate salvate in precedenza.
-                gameLogic.attaccoEseguito = false;
+                if(gameLogic.attaccoPianificato && !gameLogic.attaccoEseguito){
+
+                }
                 //TODO attesa dell'attacco avversario
                 confermaAttacco.setVisible(false);
 
@@ -577,6 +587,7 @@ public class GameScreen extends ScreenAdapter {
 
                                     int sum = j + i;
                                     //TODO salvare da qualche parte per poi passare al server le coordinate.
+                                    info.setText("LAST: nave posizionata in " + sum + ":"+ k);
                                     System.out.println(sum + " ," + k);
 
                                 } else return null;
@@ -649,6 +660,8 @@ public class GameScreen extends ScreenAdapter {
 
     public void colpitoFuoco(int x, int y) {
         //TODO creare una immagine di fuoco sulle coordinate, ovvero dove sono stato colpito
+
+
     }
 
 }

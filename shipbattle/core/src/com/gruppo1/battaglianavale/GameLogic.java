@@ -4,6 +4,7 @@ package com.gruppo1.battaglianavale;
 import com.badlogic.gdx.Gdx;
 import com.gruppo1.battaglianavale.Communication.Client;
 import com.gruppo1.battaglianavale.Communication.Server;
+import com.gruppo1.battaglianavale.Custom.Coordinata;
 import com.gruppo1.battaglianavale.Custom.MapTile;
 
 import java.net.*;
@@ -29,6 +30,9 @@ public class GameLogic //extends Thread
 
     boolean mappaClient[][];
     boolean attaccoEseguito;
+    boolean attaccoPianificato;
+
+    Coordinata coordinataAttacco;
 
     public GameLogic(BattagliaNavale game) {
         hasGameStarted = false;
@@ -54,6 +58,7 @@ public class GameLogic //extends Thread
 
     }
 
+    //J è la x, I è la y
     public void inizializzaMappa(MapTile mapTile[][]){
         for (int i = 0; i<10; i++) {
 
@@ -154,6 +159,11 @@ public class GameLogic //extends Thread
 
     public void iniziaTimer(){
         this.isGameReady= true;
+
+    }
+
+    public void colpito(int x, int y){
+
     }
 
 }
