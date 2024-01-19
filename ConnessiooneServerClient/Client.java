@@ -6,11 +6,13 @@ public class Client extends Thread {
     private String serverAddress;
     private int port;
     private String nome;
+    private Giocatore giocatore;
 
     public Client(String n) {
         serverAddress = "127.0.0.1"; // Indirizzo IP del server
         port = 5555; // Porta di connessione
         nome = n;
+        giocatore = new Giocatore(n);
     }
 
     public void run() {

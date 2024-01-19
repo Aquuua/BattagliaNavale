@@ -14,6 +14,7 @@ class GestorePlayer implements Runnable {
         try {
             // Codice per gestire la connessione del giocatore
             // Implementa la logica del gioco qui
+            
 
             // Esempio: invia e ricevi dati tra i giocatori
             BufferedReader input = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));

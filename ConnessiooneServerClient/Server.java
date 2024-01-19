@@ -5,6 +5,7 @@ public class Server extends Thread {
 
     private ServerSocket serverSocket;
     private int port;
+    private Partita partita;
 
     public Server() {
         serverSocket = null;
@@ -14,6 +15,7 @@ public class Server extends Thread {
     public void run() {
         try {
             Connessione();
+
         } catch (Exception e) {
         }
     }
