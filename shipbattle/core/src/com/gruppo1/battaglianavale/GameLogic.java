@@ -1,12 +1,16 @@
 package com.gruppo1.battaglianavale;
 
 
+import com.gruppo1.battaglianavale.Communication.Client;
+import com.gruppo1.battaglianavale.Communication.Server;
+
 import java.net.*;
 
 
 public class GameLogic //extends Thread
 {
-
+    private Server hosting;
+    private Client client;
     //TODO implementazione Client in GameLogic
     //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
@@ -78,6 +82,14 @@ public class GameLogic //extends Thread
         if (this.checkDots(ip))
             return true;
         return false;
+    }
+
+    public void initGame(String ipAddress, int port){
+        //future code
+    }
+
+    public void enterGame(String ipAddress, int port){
+        //future code
     }
 
 }
