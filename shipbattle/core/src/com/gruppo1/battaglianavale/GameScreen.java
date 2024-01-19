@@ -142,14 +142,23 @@ public class GameScreen extends ScreenAdapter {
         fpsCounter.setText("Fps: " + Gdx.graphics.getFramesPerSecond());
         game.batch.begin();
         game.batch.end();
-        if (gameLogic.isGameReady) {
-            //this.initListeners();
-            //verrà invocato
-
-            info.setPosition(btnReady.getX() - info.getWidth() / 2, gameStage.getHeight() - 150);
-        }
+//        if (gameLogic.isGameReady) {
+//            //this.initListeners();
+//            //verrà invocato
+//
+//            info.setPosition(btnReady.getX() - info.getWidth() / 2, gameStage.getHeight() - 150);
+//        }
 
         //
+        if (gameLogic.isGameReady) {
+            this.initTimer();
+            initListeners();
+            //info.setText("Aspettando che siate entrambi pronti...");
+            gameLogic.isGameReady = false;
+
+        } else {
+            info.setText("Aspettando un player...");
+        }
         gameStage.act();
 
         gameStage.draw();
@@ -161,14 +170,7 @@ public class GameScreen extends ScreenAdapter {
         this.gameStage = new Stage();
         this.gameStage.setViewport(viewport);
         this.gameStage.getViewport().setCamera(camera);
-        if (gameLogic.isGameReady) {
-            this.initTimer();
-            initListeners();
-            //info.setText("Aspettando che siate entrambi pronti...");
 
-        } else {
-            info.setText("Aspettando un player...");
-        }
         Gdx.input.setInputProcessor(gameStage);
         //gameStage.setDebugAll(true);
 
@@ -439,7 +441,7 @@ public class GameScreen extends ScreenAdapter {
                 if (areAllShipsPositioned()) {
                     //Ready solo se hai posizionato tutte le mappe
                     //Disattiva il timer dei 2 minuti e si rende invisibile
-                    //TODO mandare al server il ready o metterlo in lettura automatica rendendo GameLogic un thread e cambiando le variabili (forse meglio entrambi?)
+
                     time.clear();
                     tempo.remove();
                     btnReady.removeListener(this);
@@ -447,8 +449,7 @@ public class GameScreen extends ScreenAdapter {
                     btnCambiaMappa.setVisible(true);
 
                     gameLogic.isPlayerReady = true;
-                    //SOLO PER DEBUGGING!!!!!!!
-                    gameLogic.hasGameStarted = true;
+
                 }
 
             }
@@ -540,6 +541,7 @@ public class GameScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 //TODO mandare al server le coordinate salvate in precedenza.
                 gameLogic.attaccoEseguito = false;
+                //TODO attesa dell'attacco avversario
                 confermaAttacco.setVisible(false);
 
             }

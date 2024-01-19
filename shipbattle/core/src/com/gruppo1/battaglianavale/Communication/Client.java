@@ -1,5 +1,6 @@
 package com.gruppo1.battaglianavale.Communication;
 
+import com.badlogic.gdx.Game;
 import com.gruppo1.battaglianavale.GameLogic;
 
 import java.io.BufferedReader;
@@ -11,7 +12,7 @@ import java.net.Socket;
 public class Client implements Runnable {
 
 
-
+    private String name;
     private Socket socket;
     private GameLogic gameLogic;
     private BufferedReader input;
@@ -41,23 +42,32 @@ public class Client implements Runnable {
             String userInputMessage;
 
             while (true) {
-                // Leggi l'input del giocatore
-                System.out.print("Inserisci un messaggio per il server: ");
-                userInputMessage = userInput.readLine();
-
-                // Invia il messaggio al server
-                output.println(userInputMessage);
+//                // Leggi l'input del giocatore
+//                System.out.print("Inserisci un messaggio per il server: ");
+//                userInputMessage = userInput.readLine();
+//
+//                // Invia il messaggio al server
+//                output.println(userInputMessage);
 
                 // Ricevi e visualizza la risposta dal server
                 String messageFromServer = input.readLine();
+
+                switch (messageFromServer){
+                    case "inizia":
+                        gameLogic.iniziaPartita();
+                        break;
+                    case "entrati":
+                        gameLogic.iniziaTimer();
+                        break;
+                }
                 System.out.println("Messaggio dal server: " + messageFromServer);
 
                 // Aggiungi la logica del gioco qui, ad esempio, verifica se il gioco è finito
 
                 // Esci dal loop se necessario
-                if ("exit".equalsIgnoreCase(userInputMessage)) {
-                    break;
-                }
+//                if ("exit".equalsIgnoreCase(userInputMessage)) {
+//                    break;
+//                }
             }
         } catch (IOException e) {
             // Gestisci l'eccezione IOException

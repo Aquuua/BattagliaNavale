@@ -5,16 +5,22 @@ import com.gruppo1.battaglianavale.GameLogic;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server implements Runnable{
 //TODO RENDILO TRID
     private static final int PORT = 5959;
-    private static int playerCount = 0;
+
+    private ArrayList<PlayerHandler> clients = new ArrayList<>();
+
+    private boolean gameStarted;
+
+    int pronto;
 
 
 
     public Server(){
-
+        this.gameStarted = false;
     }
 
     public void esegui() {
@@ -27,14 +33,15 @@ public class Server implements Runnable{
                 System.out.println("Giocatore connesso.");
 
                 // Crea un thread separato per gestire la connessione del giocatore
-                PlayerHandler playerHandler = new PlayerHandler(playerSocket);
+                PlayerHandler playerHandler = new PlayerHandler(playerSocket,this);
                 Thread thread = new Thread(playerHandler);
                 thread.start();
 
-                playerCount++;
+                clients.add(playerHandler);
 
-                if (playerCount >= 2) {
+                if (clients.size() >= 2) {
                     System.out.println("Due giocatori sono connessi. Inizio della partita.");
+                    this.broadcastMessage("entrati");
 
                     break;
                 }
@@ -46,8 +53,15 @@ public class Server implements Runnable{
         }
     }
 
+    public void broadcastMessage(String message){
+        for (PlayerHandler client : clients) {
+            client.tellClient(message);
+        }
+    }
     @Override
     public void run() {
         esegui();
     }
+
+
 }

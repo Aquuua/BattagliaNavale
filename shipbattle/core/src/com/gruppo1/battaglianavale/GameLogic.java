@@ -20,7 +20,7 @@ public class GameLogic //extends Thread
     boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
     //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
-    static boolean isGameReady; //TRUE se sono entrati entrambi i player,
+    boolean isGameReady; //TRUE se sono entrati entrambi i player,
     //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
@@ -30,7 +30,7 @@ public class GameLogic //extends Thread
 
     public GameLogic(BattagliaNavale game) {
         hasGameStarted = false;
-        isGameReady = true; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
+        isGameReady = false; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
         isPlayerReady = false;
 
     }
@@ -104,5 +104,12 @@ public class GameLogic //extends Thread
         new Thread(client).start();
     }
 
+    public void iniziaPartita(){
+        this.hasGameStarted = true;
+    }
+
+    public void iniziaTimer(){
+        this.isGameReady= true;
+    }
 
 }

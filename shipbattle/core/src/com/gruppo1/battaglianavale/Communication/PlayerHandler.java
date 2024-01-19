@@ -11,8 +11,9 @@ public class PlayerHandler implements Runnable {
     private Socket playerSocket;
     private BufferedReader input;
     private PrintWriter output;
+    private Server server;
 
-    public PlayerHandler(Socket socket) {
+    public PlayerHandler(Socket socket, Server server) {
         this.playerSocket = socket;
         try {
             this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -28,10 +29,16 @@ public class PlayerHandler implements Runnable {
             String message;
             while ((message = input.readLine()) != null) {
                 // Processa il messaggio ricevuto
+                switch (message){
+                    case "pronto":
+                        giocatorePronto();
+                        break;
+
+                }
                 System.out.println("Messaggio dal giocatore: " + message);
 
                 // Esempio di risposta al giocatore
-                output.println("Risposta dal server: Messaggio ricevuto.");
+
             }
             // Implementa la logica di gestione della connessione del giocatore qui
             // Ad esempio, ricevi e invia messaggi tra i giocatori per coordinare la partita
@@ -45,6 +52,16 @@ public class PlayerHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void tellClient(String message){
+        output.println(message);
+    }
+    public void giocatorePronto(){
+        server.pronto = server.pronto + 1;
+        if(server.pronto ==2){
+            server.broadcastMessage("inizia");
         }
     }
 }
