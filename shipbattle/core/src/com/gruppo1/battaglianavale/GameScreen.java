@@ -65,6 +65,7 @@ public class GameScreen extends ScreenAdapter {
     private Image confermaAttacco;
     private Image btnCambiaMappa;
     private Image schermataFunny;
+    private Texture textureFuoco;
 
     private Sound suonoFunny;
     private ArrayList<Image> zoneColpite;
@@ -76,7 +77,7 @@ public class GameScreen extends ScreenAdapter {
         this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
         this.schermataFunny = new Image(new Texture(Gdx.files.internal("textures/haiperso.png")));
         this.suonoFunny = Gdx.audio.newSound(Gdx.files.internal("sounds/skillissue.mp3"));
-
+        this.textureFuoco = new Texture(Gdx.files.internal("textures/esplosione.png"));
 
 
         this.multiplier = mapTexture.getWidth() / 10;
@@ -150,14 +151,6 @@ public class GameScreen extends ScreenAdapter {
         fpsCounter.setText("Fps: " + Gdx.graphics.getFramesPerSecond());
         game.batch.begin();
         game.batch.end();
-//        if (gameLogic.isGameReady) {
-//            //this.initListeners();
-//            //verrà invocato
-//
-//            info.setPosition(btnReady.getX() - info.getWidth() / 2, gameStage.getHeight() - 150);
-//        }
-
-        //
         if (gameLogic.isGameReady) {
             this.initTimer();
             initListeners();
@@ -167,6 +160,7 @@ public class GameScreen extends ScreenAdapter {
         } else {
 
         }
+
         gameStage.act();
 
         gameStage.draw();
@@ -244,12 +238,19 @@ public class GameScreen extends ScreenAdapter {
 
     private void toggleMap() {
         if (!mapIconsAttack[0][0].isVisible()) {
+            if(zoneColpite != null){
+                for(int i = 0; i<zoneColpite.size(); i++){
+                    zoneColpite.get(i).setVisible(false);
+                }
+            }
+
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     mapIconsAttack[j][i].setVisible(true);
                     bordiMappaAttacco.setVisible(true);
                     bordiMappa.setVisible(false);
                     mapIcons[j][i].setVisible(false);
+
 
                 }
             }
@@ -265,6 +266,13 @@ public class GameScreen extends ScreenAdapter {
                 }
             }
         } else {
+            if(zoneColpite != null){
+                for(int i = 0; i<zoneColpite.size(); i++){
+                    zoneColpite.get(i).setVisible(true);
+                }
+            }
+
+
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
 
@@ -313,6 +321,7 @@ public class GameScreen extends ScreenAdapter {
         this.confermaAttacco = new Image(new Texture(Gdx.files.internal("textures/pulsanteAttacco.png")));
         confermaAttacco.setVisible(false);
         confermaAttacco.setScale(0.2f);
+        zoneColpite = new ArrayList<>();
         time = new Timer();
 
     }
@@ -358,6 +367,7 @@ public class GameScreen extends ScreenAdapter {
         }
         return true;
     }
+
 
     //read the name and you will understand
     private void initListeners() {
@@ -561,7 +571,7 @@ public class GameScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 //TODO mandare al server le coordinate salvate in precedenza.
                 if(gameLogic.attaccoPianificato && !gameLogic.attaccoEseguito){
-
+                    gameLogic.attacca();
                 }
                 //TODO attesa dell'attacco avversario
                 confermaAttacco.setVisible(false);
@@ -587,7 +597,7 @@ public class GameScreen extends ScreenAdapter {
 
                                     int sum = j + i;
                                     //TODO salvare da qualche parte per poi passare al server le coordinate.
-                                    info.setText("LAST: nave posizionata in " + sum + ":"+ k);
+                                    info.setText("LAST: nave posizionata in " + sum + ":"+ k+1);
                                     System.out.println(sum + " ," + k);
 
                                 } else return null;
@@ -612,6 +622,7 @@ public class GameScreen extends ScreenAdapter {
                                     tempMappe.add(mapIcons[j][k + i]);
                                     int sum = k + i;
                                     //TODO anche qui negro
+                                    info.setText("LAST: nave posizionata in " + sum + ":"+ k+1);
                                     System.out.println(j + " ," + sum);
                                 } else return null;
 
@@ -660,6 +671,11 @@ public class GameScreen extends ScreenAdapter {
 
     public void colpitoFuoco(int x, int y) {
         //TODO creare una immagine di fuoco sulle coordinate, ovvero dove sono stato colpito
+        System.out.println("colpito!!");
+        Image fire = new Image(textureFuoco);
+        zoneColpite.add(fire);
+        fire.setPosition(mapIcons[y][x].getX(),mapIcons[y][x].getY());
+        gameStage.addActor(fire);
 
 
     }

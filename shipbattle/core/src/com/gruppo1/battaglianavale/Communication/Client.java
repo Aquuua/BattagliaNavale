@@ -59,6 +59,23 @@ public class Client implements Runnable {
                     case "entrati":
                         gameLogic.iniziaTimer();
                         break;
+                    default:
+                        if(messageFromServer.contains("attacco")){
+                            // Dividere la stringa in base agli spazi
+                            String[] parti = messageFromServer.split(" ");
+
+                            // Estrarre i due valori come stringhe
+                            String valore1Stringa = parti[1];
+                            String valore2Stringa = parti[2];
+
+                            // Convertire le stringhe in interi
+                            int x = Integer.parseInt(valore1Stringa);
+                            int y = Integer.parseInt(valore2Stringa);
+                            System.out.println("Sei stato attaccato.");
+                            gameLogic.colpito(x,y);
+
+                        }
+                        break;
                 }
                 System.out.println("Messaggio dal server: " + messageFromServer);
 
@@ -96,5 +113,10 @@ public class Client implements Runnable {
 
     public void ready(){
         output.println("pronto");
+    }
+
+    public void attack(int x, int y){
+        output.println("attacco "+x+" "+y);
+        System.out.println("Stai attaccando");
     }
 }

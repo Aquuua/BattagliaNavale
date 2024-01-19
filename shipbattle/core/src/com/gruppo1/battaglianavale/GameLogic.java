@@ -35,6 +35,8 @@ public class GameLogic //extends Thread
     Coordinata coordinataAttacco;
 
     public GameLogic(BattagliaNavale game) {
+
+        this.game = game;
         hasGameStarted = false;
         isGameReady = false; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
         isPlayerReady = false;
@@ -53,10 +55,7 @@ public class GameLogic //extends Thread
         return addr;
     }
 
-    public void posizionaNave(int x, int y) {
-        //TODO dal visuale al server attraverso il client
 
-    }
 
     //J è la x, I è la y
     public void inizializzaMappa(MapTile mapTile[][]){
@@ -66,6 +65,7 @@ public class GameLogic //extends Thread
                 mappaClient[i][j] = mapTile[9-i][j].getOccupation(); //???????????????????????????????????????????????????????????
             }
         }
+
         for (int i = 0; i<10; i++) {
             System.out.println();
             for (int j = 0; j<10; j++) {
@@ -74,9 +74,6 @@ public class GameLogic //extends Thread
                 }else System.out.print("1");
             }
         }
-
-
-        //SAS
     }
 
     public boolean haNavi(){
@@ -160,10 +157,26 @@ public class GameLogic //extends Thread
     public void iniziaTimer(){
         this.isGameReady= true;
 
+
     }
 
-    public void colpito(int x, int y){
+    public void attacca(){
+        int x = coordinataAttacco.getX(), y = coordinataAttacco.getY();
+        client.attack(x,y);
 
+    }
+    public void colpito(int x1, int y1){
+        int x = x1-1;
+        int y = y1-1;
+        if(mappaClient[y][x]){
+            mappaClient[y][x] = false;
+            game.gameScreen.colpitoFuoco(x,y);
+
+        }
+
+        coordinataAttacco = null;
+        attaccoEseguito = false;
+        attaccoPianificato = false;
     }
 
 }
