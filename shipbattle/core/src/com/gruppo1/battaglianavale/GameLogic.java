@@ -3,6 +3,7 @@ package com.gruppo1.battaglianavale;
 
 import com.gruppo1.battaglianavale.Communication.Client;
 import com.gruppo1.battaglianavale.Communication.Server;
+import com.gruppo1.battaglianavale.Custom.MapTile;
 
 import java.net.*;
 
@@ -25,7 +26,7 @@ public class GameLogic //extends Thread
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
 
-
+    boolean mappaClient[][];
     boolean attaccoEseguito;
 
     public GameLogic(BattagliaNavale game) {
@@ -33,6 +34,7 @@ public class GameLogic //extends Thread
         isGameReady = false; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
         isPlayerReady = false;
 
+        mappaClient = new boolean[10][10];
     }
 
 
@@ -46,8 +48,29 @@ public class GameLogic //extends Thread
         return addr;
     }
 
-    public void posizionaNave(int i, int j) {
+    public void posizionaNave(int x, int y) {
         //TODO dal visuale al server attraverso il client
+
+    }
+
+    public void inizializzaMappa(MapTile mapTile[][]){
+        for (int i = 0; i<10; i++) {
+
+            for (int j = 0; j<10; j++) {
+                mappaClient[i][j] = mapTile[9-i][j].getOccupation(); //???????????????????????????????????????????????????????????
+            }
+        }
+        for (int i = 0; i<10; i++) {
+            System.out.println();
+            for (int j = 0; j<10; j++) {
+                if(mappaClient[i][j]){
+                    System.out.print("0");
+                }else System.out.print("1");
+            }
+        }
+
+
+        //SAS
     }
 //    public void run(){
 //        while true

@@ -447,6 +447,7 @@ public class GameScreen extends ScreenAdapter {
                     btnReady.removeListener(this);
                     btnReady.setVisible(false);
                     btnCambiaMappa.setVisible(true);
+                    gameLogic.inizializzaMappa(mapIcons);
 
                     gameLogic.isPlayerReady = true;
 
@@ -566,6 +567,7 @@ public class GameScreen extends ScreenAdapter {
                                     int sum = j + i;
                                     //TODO salvare da qualche parte per poi passare al server le coordinate.
                                     System.out.println(sum + " ," + k);
+
                                 } else return null;
                             }
                         } else {
@@ -587,6 +589,7 @@ public class GameScreen extends ScreenAdapter {
                                 if (!mapIcons[j][k + i].getOccupation()) {
                                     tempMappe.add(mapIcons[j][k + i]);
                                     int sum = k + i;
+                                    //TODO anche qui negro
                                     System.out.println(j + " ," + sum);
                                 } else return null;
 

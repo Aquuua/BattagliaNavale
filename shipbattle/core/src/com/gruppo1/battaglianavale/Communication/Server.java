@@ -58,6 +58,14 @@ public class Server implements Runnable{
             client.tellClient(message);
         }
     }
+
+    public void singleMessage(String message, PlayerHandler playerHandler){
+        for (PlayerHandler client : clients) {
+            if(client != playerHandler){
+                client.tellClient(message);
+            }
+        }
+    }
     @Override
     public void run() {
         esegui();
