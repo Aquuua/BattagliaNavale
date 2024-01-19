@@ -59,6 +59,9 @@ public class Client implements Runnable {
                     case "entrati":
                         gameLogic.iniziaTimer();
                         break;
+                    case "perso":
+                        gameLogic.vittoria();
+                        break;
                     default:
                         if(messageFromServer.contains("attacco")){
                             // Dividere la stringa in base agli spazi
@@ -98,7 +101,9 @@ public class Client implements Runnable {
     public void closeConnection() {
         try {
             if (socket != null && !socket.isClosed()) {
+                output.println("perso");
                 socket.close();
+
                 System.out.println("Connessione al server chiusa.");
             }
         } catch (IOException e) {
@@ -119,4 +124,7 @@ public class Client implements Runnable {
         output.println("attacco "+x+" "+y);
         System.out.println("Stai attaccando");
     }
+
+
+
 }

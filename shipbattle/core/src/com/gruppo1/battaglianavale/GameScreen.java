@@ -64,10 +64,10 @@ public class GameScreen extends ScreenAdapter {
     private Label info;
     private Image confermaAttacco;
     private Image btnCambiaMappa;
-    private Image schermataFunny;
+    private Image schermataFunny, win;
     private Texture textureFuoco;
 
-    private Sound suonoFunny;
+    private Sound suonoFunny, winSound;
     private ArrayList<Image> zoneColpite;
 
     public GameScreen(BattagliaNavale game) {
@@ -76,7 +76,9 @@ public class GameScreen extends ScreenAdapter {
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
         this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
         this.schermataFunny = new Image(new Texture(Gdx.files.internal("textures/haiperso.png")));
+        this.win = new Image(new Texture(Gdx.files.internal("textures/vittoria.png")));
         this.suonoFunny = Gdx.audio.newSound(Gdx.files.internal("sounds/skillissue.mp3"));
+        this.winSound = Gdx.audio.newSound(Gdx.files.internal("sounds/win.mp3"));
         this.textureFuoco = new Texture(Gdx.files.internal("textures/esplosione.png"));
 
 
@@ -217,6 +219,7 @@ public class GameScreen extends ScreenAdapter {
         gameStage.addActor(confermaAttacco);
         gameStage.addActor(btnCambiaMappa);
         gameStage.addActor(schermataFunny);
+        gameStage.addActor(win);
         tip.setPosition(gameStage.getWidth() / 2 - tip.getWidth() / 2, gameStage.getHeight() - 30);
         ipAddr.setPosition(gameStage.getWidth() / 2 - ipAddr.getWidth() / 2, 20);
         fpsCounter.setPosition(gameStage.getWidth() - 50, gameStage.getHeight() - 15);
@@ -226,7 +229,8 @@ public class GameScreen extends ScreenAdapter {
         confermaAttacco.setPosition(gameStage.getWidth() - 200, gameStage.getHeight() - 300);
         btnCambiaMappa.setPosition(gameStage.getWidth() - 100, gameStage.getHeight() - 300);
         schermataFunny.setPosition(0,0);
-
+        win.setVisible(false);
+        win.setPosition(0,0);
         schermataFunny.setVisible(false);
 
     }
@@ -236,12 +240,21 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
+    public void haiVinto(){
+        win.setVisible(true);
+        winSound.play();
+    }
+
+    private void nascondiFuoco(){
+        for(int i = 0; i<zoneColpite.size(); i++){
+            zoneColpite.get(i).setVisible(false);
+        }
+    }
+
     private void toggleMap() {
         if (!mapIconsAttack[0][0].isVisible()) {
             if(zoneColpite != null){
-                for(int i = 0; i<zoneColpite.size(); i++){
-                    zoneColpite.get(i).setVisible(false);
-                }
+                nascondiFuoco();
             }
 
             for (int i = 0; i < 10; i++) {
@@ -670,13 +683,12 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void colpitoFuoco(int x, int y) {
-        //TODO creare una immagine di fuoco sulle coordinate, ovvero dove sono stato colpito
+
         System.out.println("colpito!!");
         Image fire = new Image(textureFuoco);
         zoneColpite.add(fire);
         fire.setPosition(mapIcons[y][x].getX(),mapIcons[y][x].getY());
         gameStage.addActor(fire);
-
 
     }
 

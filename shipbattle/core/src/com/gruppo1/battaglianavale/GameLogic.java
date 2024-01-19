@@ -89,15 +89,13 @@ public class GameLogic //extends Thread
         return false;
     }
 
-//    public boolean haPerso(){
-//        if(!haNavi()){
-//            //TODO
-//
-//        }
-//    }
-//    public void run(){
-//        while true
-//    }
+    public boolean haPerso(){
+        if(!haNavi()){
+            game.gameScreen.haiPerso();
+            return true;
+        }else return false;
+    }
+
     //Controlla se una stringa è un vero indirizzo IP
     private boolean checkDots(String ip) {
 
@@ -177,6 +175,13 @@ public class GameLogic //extends Thread
         coordinataAttacco = null;
         attaccoEseguito = false;
         attaccoPianificato = false;
+        if(haPerso()){
+            client.closeConnection();
+        }
+    }
+
+    public void vittoria(){
+        game.gameScreen.haiVinto();
     }
 
 }
