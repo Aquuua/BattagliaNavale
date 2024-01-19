@@ -168,8 +168,8 @@ public class GameLogic //extends Thread
     public void colpito(int x1, int y1){
         int x = x1-1;
         int y = y1-1;
-        if(mappaClient[y][x]){
-            mappaClient[y][x] = false;
+        if(mappaClient[9-y][x]){
+            mappaClient[9-y][x] = false;
             game.gameScreen.colpitoFuoco(x,y);
 
         }
