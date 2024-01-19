@@ -149,8 +149,7 @@ public class MenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO far startare il Server sulla macchina e il client con Localhost. BISOGNA FARE TANTE COSE
-                //game.theGame.initServer();
-                //game.theGame.initClient();
+                game.theGame.initGame();//in realtà fa tutto lì
                 game.setScreen(game.gameScreen);
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 mainMenu.dispose();
@@ -171,9 +170,14 @@ public class MenuScreen extends ScreenAdapter {
         btnEnterGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(game.theGame.entraNellaPartita(ipField.getText())){
+                String ip = ipField.getText();
+                if(game.theGame.entraNellaPartita(ip)){
                     System.out.println("SAS");
-                    //TODO far entrare il client del GameLogic che è anche quello un TODO in un server attraverso l'ip.
+                    game.theGame.enterGame(ip, GameLogic.getDefaultPort());
+                    game.setScreen(game.gameScreen);
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                    mainMenu.dispose();
+
 
                 }
 //                game.setScreen(game.gameScreen);

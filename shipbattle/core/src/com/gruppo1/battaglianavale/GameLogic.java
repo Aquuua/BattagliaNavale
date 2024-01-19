@@ -15,10 +15,12 @@ public class GameLogic //extends Thread
     //TODO molto TODO molto molto TODO
     private BattagliaNavale game;
 
+    private static final int DEFAULT_PORT = 5959;
+
     boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
     //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
-    boolean isGameReady; //TRUE se sono entrati entrambi i player,
+    static boolean isGameReady; //TRUE se sono entrati entrambi i player,
     //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
@@ -32,6 +34,7 @@ public class GameLogic //extends Thread
         isPlayerReady = false;
 
     }
+
 
     public String getLocalAddress() {
         String addr;
@@ -78,18 +81,28 @@ public class GameLogic //extends Thread
         }
     }
 
+    public static int getDefaultPort(){
+        return GameLogic.DEFAULT_PORT;
+    }
+
     public boolean entraNellaPartita(String ip) {
         if (this.checkDots(ip))
             return true;
         return false;
     }
 
-    public void initGame(String ipAddress, int port){
-        //future code
+    public void initGame(){
+        hosting = new Server();
+        new Thread(hosting).start();
+        client = new Client("localhost", GameLogic.getDefaultPort(), this);
+
+        new Thread(client).start();
     }
 
     public void enterGame(String ipAddress, int port){
-        //future code
+        client = new Client(ipAddress, port, this);
+        new Thread(client).start();
     }
+
 
 }
