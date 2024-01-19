@@ -81,6 +81,8 @@ public class BattagliaNavale extends Game {
 		paramTitle.color = Color.BLACK;
 		font12 = gen.generateFont(parameter);
 		font18 = gen.generateFont(biggerParameter);
+		font12.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		font18.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		fontTxtField = gen.generateFont(paramField);
 		fontTitle = gen.generateFont(paramTitle);
 
