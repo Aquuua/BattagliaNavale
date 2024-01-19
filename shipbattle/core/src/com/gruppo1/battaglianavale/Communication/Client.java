@@ -18,8 +18,8 @@ public class Client implements Runnable {
     private BufferedReader input;
     private PrintWriter output;
 
+    // Inizializza la connessione al server nel costruttore se necessario
     public Client(String SERVER_ADDRESS, int SERVER_PORT, GameLogic gameLogic) {
-        // Inizializza la connessione al server nel costruttore se necessario
         try {
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             System.out.println("Connesso al server.");
@@ -82,15 +82,12 @@ public class Client implements Runnable {
                 }
                 System.out.println("Messaggio dal server: " + messageFromServer);
 
-                // Aggiungi la logica del gioco qui, ad esempio, verifica se il gioco è finito
-
                 // Esci dal loop se necessario
 //                if ("exit".equalsIgnoreCase(userInputMessage)) {
 //                    break;
 //                }
             }
         } catch (IOException e) {
-            // Gestisci l'eccezione IOException
             e.printStackTrace();
         }
     }

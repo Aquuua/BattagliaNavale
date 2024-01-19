@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shipbattle.iml" filepath="$PROJECT_DIR$/.idea/modules/shipbattle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/shipbattle.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/shipbattle.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/shipbattle.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/shipbattle.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/shipbattle.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/shipbattle.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.test.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/shipbattle.desktop.test.iml" />
+    </modules>
+  </component>
+</project>

@@ -44,10 +44,6 @@ public class PlayerHandler implements Runnable {
                 // Esempio di risposta al giocatore
 
             }
-            // Implementa la logica di gestione della connessione del giocatore qui
-            // Ad esempio, ricevi e invia messaggi tra i giocatori per coordinare la partita
-            // Puoi implementare la logica del gioco della battaglia navale qui
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
