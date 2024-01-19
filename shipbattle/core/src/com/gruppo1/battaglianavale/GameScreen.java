@@ -4,6 +4,7 @@ package com.gruppo1.battaglianavale;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -62,6 +63,9 @@ public class GameScreen extends ScreenAdapter {
     private Label info;
     private Image confermaAttacco;
     private Image btnCambiaMappa;
+    private Image schermataFunny;
+
+    private Sound suonoFunny;
     private ArrayList<Image> zoneColpite;
 
     public GameScreen(BattagliaNavale game) {
@@ -69,6 +73,9 @@ public class GameScreen extends ScreenAdapter {
         this.gameLogic = game.theGame;
         this.mapTexture = new Texture(Gdx.files.internal("textures/mapTexture.png"));
         this.attackMapTexture = new Texture(Gdx.files.internal("textures/mappaAttacco.png"));
+        this.schermataFunny = new Image(new Texture(Gdx.files.internal("textures/haiperso.png")));
+        this.suonoFunny = new Sound
+
 
 
         this.multiplier = mapTexture.getWidth() / 10;
@@ -214,6 +221,7 @@ public class GameScreen extends ScreenAdapter {
         gameStage.addActor(ipAddr);
         gameStage.addActor(confermaAttacco);
         gameStage.addActor(btnCambiaMappa);
+        gameStage.addActor(schermataFunny);
         tip.setPosition(gameStage.getWidth() / 2 - tip.getWidth() / 2, gameStage.getHeight() - 30);
         ipAddr.setPosition(gameStage.getWidth() / 2 - ipAddr.getWidth() / 2, 20);
         fpsCounter.setPosition(gameStage.getWidth() - 50, gameStage.getHeight() - 15);
@@ -222,6 +230,9 @@ public class GameScreen extends ScreenAdapter {
         tempo.setPosition(gameStage.getWidth() - tempo.getWidth(), gameStage.getHeight() - 100);
         confermaAttacco.setPosition(gameStage.getWidth() - 200, gameStage.getHeight() - 300);
         btnCambiaMappa.setPosition(gameStage.getWidth() - 100, gameStage.getHeight() - 300);
+        schermataFunny.setPosition(0,0);
+
+        //schermataFunny.setVisible(false);
 
     }
 

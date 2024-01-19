@@ -1,6 +1,7 @@
 package com.gruppo1.battaglianavale;
 
 
+import com.badlogic.gdx.Gdx;
 import com.gruppo1.battaglianavale.Communication.Client;
 import com.gruppo1.battaglianavale.Communication.Server;
 import com.gruppo1.battaglianavale.Custom.MapTile;
@@ -72,6 +73,26 @@ public class GameLogic //extends Thread
 
         //SAS
     }
+
+    public boolean haNavi(){
+        for (int i = 0; i<10; i++) {
+
+            for (int j = 0; j<10; j++) {
+                if(mappaClient[i][j]){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+//    public boolean haPerso(){
+//        if(!haNavi()){
+//            //TODO
+//
+//        }
+//    }
 //    public void run(){
 //        while true
 //    }
