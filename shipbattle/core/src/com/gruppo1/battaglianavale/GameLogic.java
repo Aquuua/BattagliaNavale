@@ -14,17 +14,16 @@ public class GameLogic //extends Thread
 {
     private Server hosting;
     private Client client;
-    //TODO implementazione Client in GameLogic
-    //TODO molto TODO molto molto TODO
+
     private BattagliaNavale game;
 
     private static final int DEFAULT_PORT = 5959;
 
     boolean hasGameStarted;//TRUE se entrambi i player hanno messo Pronto
-    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
+
 
     boolean isGameReady; //TRUE se sono entrati entrambi i player,
-    //TODO variabile che verrà modificata dal SERVER con un BROADCAST ai CLIENT (SPERO)
+
 
     boolean isPlayerReady;// TRUE se il client ha messo pronto
 
@@ -38,7 +37,7 @@ public class GameLogic //extends Thread
 
         this.game = game;
         hasGameStarted = false;
-        isGameReady = false; //true TEMPORANEI sto aspettando il client e server quindi TODO ANCHE QUESTOOO
+        isGameReady = false;
         isPlayerReady = false;
 
         mappaClient = new boolean[10][10];
@@ -57,21 +56,13 @@ public class GameLogic //extends Thread
 
 
 
+
     //J è la x, I è la y
     public void inizializzaMappa(MapTile mapTile[][]){
         for (int i = 0; i<10; i++) {
 
             for (int j = 0; j<10; j++) {
-                mappaClient[i][j] = mapTile[9-i][j].getOccupation(); //???????????????????????????????????????????????????????????
-            }
-        }
-
-        for (int i = 0; i<10; i++) {
-            System.out.println();
-            for (int j = 0; j<10; j++) {
-                if(mappaClient[i][j]){
-                    System.out.print("0");
-                }else System.out.print("1");
+                mappaClient[i][j] = mapTile[9-i][j].getOccupation();
             }
         }
     }
@@ -143,16 +134,24 @@ public class GameLogic //extends Thread
         new Thread(client).start();
     }
 
-    public void enterGame(String ipAddress, int port){
-        client = new Client(ipAddress, port, this);
-        new Thread(client).start();
+    public boolean enterGame(String ipAddress, int port){
+        try{
+            client = new Client(ipAddress, port, this);
+            new Thread(client).start();
+        }catch (Exception e){
+            return false;
+        }
+
+        return true;
     }
 
     public void iniziaPartita(){
+        //game.gameScreen.setInfo("Partita iniziata! Posiziona le tue navi");
         this.hasGameStarted = true;
     }
 
     public void iniziaTimer(){
+        game.gameScreen.setInfo("Posiziona le tue navi!");
         this.isGameReady= true;
 
 
@@ -169,7 +168,6 @@ public class GameLogic //extends Thread
         if(mappaClient[9-y][x]){
             mappaClient[9-y][x] = false;
             game.gameScreen.colpitoFuoco(x,y);
-
         }
 
         coordinataAttacco = null;
@@ -177,11 +175,24 @@ public class GameLogic //extends Thread
         attaccoPianificato = false;
         if(haPerso()){
             client.closeConnection();
+        }else{
+            game.gameScreen.setInfo("Ti hanno sparato in: " + x + "-"+y+" Attacca!");
         }
+
+
     }
 
     public void vittoria(){
         game.gameScreen.haiVinto();
+    }
+
+    public void chiusura(){
+        client.closeConnection();
+
+    }
+
+    public void pronto(){
+        client.ready();
     }
 
 }

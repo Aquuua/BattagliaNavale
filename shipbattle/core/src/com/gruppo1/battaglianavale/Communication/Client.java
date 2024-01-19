@@ -12,11 +12,11 @@ import java.net.Socket;
 public class Client implements Runnable {
 
 
-    private String name;
+
     private Socket socket;
-    private GameLogic gameLogic;
-    private BufferedReader input;
-    private PrintWriter output;
+    private GameLogic gameLogic; //Classe della logica del client di gioco
+    private BufferedReader input;//Input
+    private PrintWriter output;//Output
 
     // Inizializza la connessione al server nel costruttore se necessario
     public Client(String SERVER_ADDRESS, int SERVER_PORT, GameLogic gameLogic) {
@@ -42,13 +42,6 @@ public class Client implements Runnable {
             String userInputMessage;
 
             while (true) {
-//                // Leggi l'input del giocatore
-//                System.out.print("Inserisci un messaggio per il server: ");
-//                userInputMessage = userInput.readLine();
-//
-//                // Invia il messaggio al server
-//                output.println(userInputMessage);
-
                 // Ricevi e visualizza la risposta dal server
                 String messageFromServer = input.readLine();
 
@@ -64,28 +57,24 @@ public class Client implements Runnable {
                         break;
                     default:
                         if(messageFromServer.contains("attacco")){
-                            // Dividere la stringa in base agli spazi
+                            //Dividere la stringa in base agli spazi
                             String[] parti = messageFromServer.split(" ");
 
-                            // Estrarre i due valori come stringhe
+                            //Estrarre i due valori come stringhe
                             String valore1Stringa = parti[1];
                             String valore2Stringa = parti[2];
 
-                            // Convertire le stringhe in interi
+                            //Convertire le stringhe in interi
                             int x = Integer.parseInt(valore1Stringa);
                             int y = Integer.parseInt(valore2Stringa);
-                            System.out.println("Sei stato attaccato.");
+                            //System.out.println("Sei stato attaccato.");
                             gameLogic.colpito(x,y);
 
                         }
                         break;
                 }
-                System.out.println("Messaggio dal server: " + messageFromServer);
+                //System.out.println("Messaggio dal server: " + messageFromServer);
 
-                // Esci dal loop se necessario
-//                if ("exit".equalsIgnoreCase(userInputMessage)) {
-//                    break;
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,6 +97,7 @@ public class Client implements Runnable {
         }
     }
 
+    //Inizializzazione
     @Override
     public void run() {
         interactWithServer();
@@ -119,7 +109,7 @@ public class Client implements Runnable {
 
     public void attack(int x, int y){
         output.println("attacco "+x+" "+y);
-        System.out.println("Stai attaccando");
+
     }
 
 

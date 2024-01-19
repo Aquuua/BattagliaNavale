@@ -62,6 +62,7 @@ public class PlayerHandler implements Runnable {
         server.pronto = server.pronto + 1;
         if(server.pronto ==2){
             server.broadcastMessage("inizia");
+
         }
     }
 

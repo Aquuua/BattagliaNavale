@@ -19,6 +19,7 @@ public class DesktopLauncher {
 		config.setTitle("BattagliaNavale");
 		config.setResizable(false);
 
+
 		new Lwjgl3Application(new BattagliaNavale(), config);
 	}
 }

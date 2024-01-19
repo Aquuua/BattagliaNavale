@@ -21,6 +21,7 @@ public class Server implements Runnable{
 
     public Server(){
         this.gameStarted = false;
+        pronto = 0;
     }
 
     public void esegui() {
